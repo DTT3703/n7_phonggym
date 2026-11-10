@@ -141,11 +141,6 @@
                             </button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link fw-semibold" id="hardware-tab" data-bs-toggle="tab" data-bs-target="#hardware-tab-pane" type="button" role="tab">
-                                <i class="bi bi-qr-code-scan me-1"></i> Tích Hợp Phần Cứng Check-in
-                            </button>
-                        </li>
-                        <li class="nav-item" role="presentation">
                             <button class="nav-link fw-semibold" id="payment-tab" data-bs-toggle="tab" data-bs-target="#payment-tab-pane" type="button" role="tab">
                                 <i class="bi bi-credit-card me-1"></i> Cổng Thanh Toán QR
                             </button>
