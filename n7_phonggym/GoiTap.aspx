@@ -1,0 +1,221 @@
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="GoiTap.aspx.cs" Inherits="n7_phonggym.GoiTap" %>
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="vi">
+<head runat="server">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quản Lý Gói Tập & Dịch Vụ - Admin Panel</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet" />
+
+    <style>
+        :root {
+            --sidebar-bg: #10854d;
+            --sidebar-hover: #0c6b3e;
+            --sidebar-active: #0d6efd;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: var(--sidebar-bg);
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        .sidebar .brand-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            padding: 20px 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.85);
+            padding: 12px 20px;
+            margin: 4px 10px;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        .sidebar .nav-link:hover {
+            color: #fff;
+            background-color: var(--sidebar-hover);
+        }
+
+        .sidebar .nav-link.active {
+            color: #fff;
+            background-color: var(--sidebar-active);
+        }
+
+        .top-header {
+            background-color: #fff;
+            padding: 15px 30px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .main-content {
+            padding: 30px;
+        }
+
+        footer.main-footer {
+            text-align: center;
+            padding: 15px;
+            color: #6c757d;
+            font-size: 0.875rem;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <div class="d-flex">
+            <!-- Sidebar Navigation -->
+            <nav class="sidebar d-flex flex-column flex-shrink-0">
+                <div class="brand-title">
+                    <i class="bi bi-activity me-2"></i>Admin Panel
+                </div>
+                
+                <ul class="nav nav-pills flex-column mb-auto mt-2">
+                    <li class="nav-item">
+                        <a href="WebForm1.aspx" class="nav-link">
+                            <i class="bi bi-speedometer2 me-2"></i>Tổng quan
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="QuanLyHoiVien.aspx" class="nav-link">
+                            <i class="bi bi-people me-2"></i>Quản lý hội viên
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="GoiTap.aspx" class="nav-link active">
+                            <i class="bi bi-box-seam me-2"></i>Gói tập & Dịch vụ
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="LichTap.aspx" class="nav-link">
+                            <i class="bi bi-calendar-week me-2"></i>Lịch tập & PT
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="Nhanvien.aspx" class="nav-link">
+                            <i class="bi bi-person-badge me-2"></i>Nhân viên
+                        </a>
+                    </li>
+                    <li class="nav-item">
+    <a href="Caidathethong.aspx" class="nav-link">
+        <i class="bi bi-gear me-2"></i>Cài đặt hệ thống
+    </a>
+</li>
+                </ul>
+            </nav>
+
+            <!-- Main Content Container -->
+            <div class="w-100 d-flex flex-column min-vh-100">
+                <!-- Top Header -->
+                <header class="top-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold">Quản Lý Gói Tập & Dịch Vụ</h5>
+                    <span class="text-muted small"><i class="bi bi-clock me-1"></i><%= DateTime.Now.ToString("dd/MM/yyyy HH:mm") %></span>
+                </header>
+
+                <!-- Page Body Content -->
+                <main class="main-content flex-grow-1">
+                    <div class="row mb-4 align-items-center">
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <asp:TextBox ID="txtSearch" runat="server" CssClass="form-control" Placeholder="Tìm kiếm gói tập..."></asp:TextBox>
+                                <asp:Button ID="btnSearch" runat="server" Text="Tìm kiếm" CssClass="btn btn-outline-secondary" OnClick="btnSearch_Click" />
+                            </div>
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addGoiTapModal">
+                                <i class="bi bi-plus-circle me-1"></i> Thêm Gói Tập Mới
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Bảng danh sách gói tập -->
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-white py-3">
+                            <h6 class="card-title mb-0 fw-bold"><i class="bi bi-card-checklist me-2"></i>Danh Sách Gói Tập Phổ Biến</h6>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <asp:GridView ID="gvGoiTap" runat="server" AutoGenerateColumns="False" CssClass="table table-hover align-middle mb-0" GridLines="None">
+                                    <Columns>
+                                        <asp:BoundField DataField="ID_MGT" HeaderText="Mã Gói" />
+                                        <asp:BoundField DataField="TenGoiTap" HeaderText="Tên Gói Tập" />
+                                        <asp:BoundField DataField="SoThang" HeaderText="Thời Hạn (Tháng)" />
+                                        <asp:BoundField DataField="SoLuotPT" HeaderText="Lượt PT" />
+                                        <asp:BoundField DataField="SoLuotTuDo" HeaderText="Lượt Tập Tự Do" />
+                                        <asp:BoundField DataField="MucGia" HeaderText="Mức Giá (VNĐ)" DataFormatString="{0:N0}" />
+                                        <asp:TemplateField HeaderText="Thao tác">
+                                            <ItemTemplate>
+                                                <button type="button" class="btn btn-sm btn-outline-primary me-1"><i class="bi bi-pencil-square"></i> Sửa</button>
+                                                <button type="button" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i> Xóa</button>
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                    </Columns>
+                                    <HeaderStyle CssClass="table-light" />
+                                </asp:GridView>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+
+                <footer class="main-footer">
+                    &copy; 2026 - Giao diện quản trị Admin WebForms.
+                </footer>
+            </div>
+        </div>
+
+        <!-- Modal Thêm Gói Tập -->
+        <div class="modal fade" id="addGoiTapModal" tabindex="-1" aria-labelledby="addGoiTapModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title fw-bold" id="addGoiTapModalLabel">Thêm Gói Tập Mới</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Tên Gói Tập</label>
+                            <asp:TextBox ID="txtTenGoiTap" runat="server" CssClass="form-control" Placeholder="Ví dụ: Gói Tập VIP 6 Tháng"></asp:TextBox>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Số Tháng</label>
+                            <asp:TextBox ID="txtSoThang" runat="server" TextMode="Number" CssClass="form-control" Placeholder="6"></asp:TextBox>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Số Lượt PT Kèm</label>
+                            <asp:TextBox ID="txtSoLuotPT" runat="server" TextMode="Number" CssClass="form-control" Placeholder="12"></asp:TextBox>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Số Lượt Tập Tự Do</label>
+                            <asp:TextBox ID="txtSoLuotTuDo" runat="server" TextMode="Number" CssClass="form-control" Placeholder="999"></asp:TextBox>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Mức Giá (VNĐ)</label>
+                            <asp:TextBox ID="txtMucGia" runat="server" TextMode="Number" CssClass="form-control" Placeholder="5000000"></asp:TextBox>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                        <asp:Button ID="btnSaveGoiTap" runat="server" Text="Lưu Gói Tập" CssClass="btn btn-success" OnClick="btnSaveGoiTap_Click" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/bootstrap.bundle.min.js"></script>
+</body>
+</html>
