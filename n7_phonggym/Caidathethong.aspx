@@ -118,7 +118,6 @@
                 </ul>
             </nav>
 
-            <!-- Main Content Container -->
             <div class="w-100 d-flex flex-column min-vh-100">
                 <!-- Top Header -->
                 <header class="top-header d-flex justify-content-between align-items-center">
