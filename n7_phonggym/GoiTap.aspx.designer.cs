@@ -51,6 +51,24 @@ namespace n7_phonggym
         protected global::System.Web.UI.WebControls.GridView gvGoiTap;
 
         /// <summary>
+        /// litTitle control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal litTitle;
+
+        /// <summary>
+        /// hfID control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hfID;
+
+        /// <summary>
         /// txtTenGoiTap control.
         /// </summary>
         /// <remarks>
@@ -94,6 +112,42 @@ namespace n7_phonggym
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtMucGia;
+
+        /// <summary>
+        /// khuAnhHienTai control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl khuAnhHienTai;
+
+        /// <summary>
+        /// imgHienTai control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Image imgHienTai;
+
+        /// <summary>
+        /// chkXoaAnh control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chkXoaAnh;
+
+        /// <summary>
+        /// fuAnh control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.FileUpload fuAnh;
 
         /// <summary>
         /// btnSaveGoiTap control.
