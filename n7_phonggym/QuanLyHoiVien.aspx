@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Quản Lý Hội Viên - Admin Panel</title>
-    
+
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
     <!-- Bootstrap Icons -->
@@ -83,7 +83,7 @@
                 <div class="brand-title">
                     <i class="bi bi-activity me-2"></i>Admin Panel
                 </div>
-                
+
                 <ul class="nav nav-pills flex-column mb-auto mt-2">
                     <li class="nav-item">
                         <a href="WebForm1.aspx" class="nav-link">
@@ -111,10 +111,10 @@
                         </a>
                     </li>
                     <li class="nav-item">
-    <a href="Caidathethong.aspx" class="nav-link">
-        <i class="bi bi-gear me-2"></i>Cài đặt hệ thống
-    </a>
-</li>
+                        <a href="Caidathethong.aspx" class="nav-link">
+                            <i class="bi bi-gear me-2"></i>Cài đặt hệ thống
+                        </a>
+                    </li>
                 </ul>
             </nav>
 
@@ -136,7 +136,7 @@
                             </div>
                         </div>
                         <div class="col-md-6 text-end">
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addHoiVienModal">
+                            <button type="button" id="btnThemMoi" class="btn btn-primary" onclick="moFormThem(); return false;">
                                 <i class="bi bi-person-plus-fill me-1"></i> Thêm hội viên mới
                             </button>
                         </div>
@@ -149,7 +149,9 @@
                         </div>
                         <div class="card-body p-0">
                             <div class="table-responsive">
-                                <asp:GridView ID="gvHoiVien" runat="server" AutoGenerateColumns="False" CssClass="table table-hover align-middle mb-0" GridLines="None">
+                                <asp:GridView ID="gvHoiVien" runat="server" AutoGenerateColumns="False"
+                                    CssClass="table table-hover align-middle mb-0" GridLines="None"
+                                    DataKeyNames="ID_MHV" OnRowCommand="gvHoiVien_RowCommand">
                                     <Columns>
                                         <asp:BoundField DataField="ID_MHV" HeaderText="Mã HV" />
                                         <asp:BoundField DataField="HoTen" HeaderText="Họ và Tên" />
@@ -158,12 +160,24 @@
                                         <asp:BoundField DataField="DiaChi" HeaderText="Địa Chỉ" />
                                         <asp:TemplateField HeaderText="Thao tác">
                                             <ItemTemplate>
-                                                <button type="button" class="btn btn-sm btn-outline-primary me-1"><i class="bi bi-pencil-square"></i> Sửa</button>
-                                                <button type="button" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i> Xóa</button>
+                                                <asp:LinkButton ID="lnkSua" runat="server" CommandName="SuaHV"
+                                                    CommandArgument='<%# Eval("ID_MHV") %>'
+                                                    CssClass="btn btn-sm btn-outline-primary me-1">
+                                                    <i class="bi bi-pencil-square"></i> Sửa
+                                                </asp:LinkButton>
+                                                <asp:LinkButton ID="lnkXoa" runat="server" CommandName="XoaHV"
+                                                    CommandArgument='<%# Eval("ID_MHV") %>'
+                                                    CssClass="btn btn-sm btn-outline-danger"
+                                                    OnClientClick="return confirm('Bạn có chắc muốn xóa hội viên này?');">
+                                                    <i class="bi bi-trash"></i> Xóa
+                                                </asp:LinkButton>
                                             </ItemTemplate>
                                         </asp:TemplateField>
                                     </Columns>
                                     <HeaderStyle CssClass="table-light" />
+                                    <EmptyDataTemplate>
+                                        <div class="text-center text-muted py-4">Không có hội viên nào.</div>
+                                    </EmptyDataTemplate>
                                 </asp:GridView>
                             </div>
                         </div>
@@ -176,26 +190,29 @@
             </div>
         </div>
 
-        <!-- Modal Thêm Hội Viên -->
+        <!-- Modal Thêm / Sửa Hội Viên -->
         <div class="modal fade" id="addHoiVienModal" tabindex="-1" aria-labelledby="addHoiVienModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title fw-bold" id="addHoiVienModalLabel">Thêm Hội Viên Mới</h5>
+                        <h5 class="modal-title fw-bold" id="addHoiVienModalLabel">
+                            <asp:Literal ID="litTitle" runat="server" Text="Thêm Hội Viên Mới"></asp:Literal>
+                        </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
+                        <asp:HiddenField ID="hfID" runat="server" ClientIDMode="Static" />
                         <div class="mb-3">
                             <label class="form-label">Họ và Tên</label>
-                            <asp:TextBox ID="txtHoTen" runat="server" CssClass="form-control" Placeholder="Nhập họ và tên"></asp:TextBox>
+                            <asp:TextBox ID="txtHoTen" runat="server" ClientIDMode="Static" CssClass="form-control" Placeholder="Nhập họ và tên"></asp:TextBox>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Ngày Sinh</label>
-                            <asp:TextBox ID="txtNgaySinh" runat="server" TextMode="Date" CssClass="form-control"></asp:TextBox>
+                            <asp:TextBox ID="txtNgaySinh" runat="server" ClientIDMode="Static" TextMode="Date" CssClass="form-control"></asp:TextBox>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Giới Tính</label>
-                            <asp:DropDownList ID="ddlGioiTinh" runat="server" CssClass="form-select">
+                            <asp:DropDownList ID="ddlGioiTinh" runat="server" ClientIDMode="Static" CssClass="form-select">
                                 <asp:ListItem Text="Nam" Value="Nam"></asp:ListItem>
                                 <asp:ListItem Text="Nữ" Value="Nữ"></asp:ListItem>
                                 <asp:ListItem Text="Khác" Value="Khác"></asp:ListItem>
@@ -203,7 +220,7 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Địa Chỉ</label>
-                            <asp:TextBox ID="txtDiaChi" runat="server" CssClass="form-control" Placeholder="Nhập địa chỉ"></asp:TextBox>
+                            <asp:TextBox ID="txtDiaChi" runat="server" ClientIDMode="Static" CssClass="form-control" Placeholder="Nhập địa chỉ"></asp:TextBox>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -215,6 +232,38 @@
         </div>
     </form>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Mở modal (dùng cho nút Thêm và cho nút Sửa từ code-behind)
+        function showModal() {
+            var el = document.getElementById('addHoiVienModal');
+            if (el && window.bootstrap) {
+                bootstrap.Modal.getOrCreateInstance(el).show();
+            } else {
+                alert('Không tải được Bootstrap. Hãy kiểm tra kết nối Internet.');
+            }
+        }
+
+        function setVal(id, value) {
+            var el = document.getElementById(id);
+            if (el) el.value = value;
+        }
+
+        // Nút "Thêm hội viên mới"
+        function moFormThem() {
+            // Xóa dữ liệu cũ (nếu còn sót sau khi bấm Sửa)
+            setVal('hfID', '');
+            setVal('txtHoTen', '');
+            setVal('txtNgaySinh', '');
+            setVal('txtDiaChi', '');
+            var gt = document.getElementById('ddlGioiTinh');
+            if (gt) gt.selectedIndex = 0;
+
+            var title = document.getElementById('addHoiVienModalLabel');
+            if (title) title.innerText = 'Thêm Hội Viên Mới';
+
+            showModal();
+        }
+    </script>
 </body>
 </html>
