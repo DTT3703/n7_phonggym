@@ -1,4 +1,4 @@
-# 🏋️‍♂️ HỆ THỐNG QUẢN LÝ PHÒNG GYM (n7_phonggym)
+# 🏋️‍♂️ HỆ THỐNG QUẢN LÝ PHÒNG GYM 
 
 > **Dự án số hóa quy trình vận hành phòng Gym:** Giúp tối ưu hóa nguồn lực, quản lý hội viên, lịch tập PT, bảo trì thiết bị và theo dõi doanh thu theo thời gian thực.
 
