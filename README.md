@@ -8,7 +8,7 @@
 
 | Thành viên | Trách nhiệm & Phụ trách |
 | :--- | :--- |
-| **Nguyễn Tấn Đạt** | Tổng quan hệ thống, Quản lý Hệ thống (Admin/Chủ sở hữu) |
+| **Nguyễn Tấn Đạt** | Tổng quan , Cài Đặt Hệ thống (Admin/Chủ sở hữu) |
 | **Lê Thanh Huy** | Quản lý Nhân viên, Lịch tập, Huấn luyện viên (PT) |
 | **Dương Thanh Toàn** | Quản lý Hội viên, Gói tập & Dịch vụ |
 
