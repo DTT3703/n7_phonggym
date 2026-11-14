@@ -1,4 +1,4 @@
-<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="WebForm1.aspx.cs" Inherits="n7_phonggym.WebForm1" %>
+<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="WebForm1.aspx.cs" Inherits="n7_phonggym.WebForm1" ContentType="text/html; charset=utf-8" %>
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="vi">
@@ -199,12 +199,12 @@
                     </li>
                     <li class="nav-item">
                         <a href="GoiTap.aspx" class="nav-link">
-                            <i class="bi bi-box-seam me-2"></i>Gói tập & Dịch vụ
+                            <i class="bi bi-box-seam me-2"></i>Gói tập &amp; Dịch vụ
                         </a>
                     </li>
                     <li class="nav-item">
                         <a href="LichTap.aspx" class="nav-link">
-                            <i class="bi bi-calendar-week me-2"></i>Lịch tập & PT
+                            <i class="bi bi-calendar-week me-2"></i>Lịch tập &amp; PT
                         </a>
                     </li>
                     <li class="nav-item">
