@@ -184,13 +184,18 @@
                                 <i class="bi bi-credit-card me-1"></i> Cổng Thanh Toán QR
                             </button>
                         </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link fw-semibold" id="holiday-tab" data-bs-toggle="tab" data-bs-target="#holiday-tab-pane" type="button" role="tab">
+                                <i class="bi bi-calendar-x me-1"></i> Ngày Nghỉ / Lễ &amp; Bảo Trì
+                                <span class="badge rounded-pill text-bg-danger ms-1" id="holidayCount">0</span>
+                            </button>
+                        </li>
                     </ul>
 
                     <div class="tab-content" id="settingTabsContent">
                         <!-- Tab 1: Thông tin phòng Gym -->
                         <div class="tab-pane fade show active" id="info-tab-pane" role="tabpanel">
-                            <!-- Card 1: Cấu hình thông tin cơ sở & Upload Logo -->
-                            <div class="card shadow-sm border-0 mb-4">
+                            <div class="card shadow-sm border-0">
                                 <div class="card-body p-4">
                                     <h6 class="fw-bold mb-3 text-success">
                                         <i class="bi bi-info-circle me-1"></i> Cấu hình thông tin cơ sở
@@ -199,7 +204,7 @@
                                     <!-- Upload Logo -->
                                     <div class="d-flex flex-wrap align-items-center gap-4 mb-4 pb-3 border-bottom">
                                         <div class="logo-preview-box">
-                                            <img id="imgLogoPreview" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='110' height='110'><rect width='100%' height='100%' fill='%2310854d'/><text x='50%' y='54%' font-size='22' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'>N7 GYM</text></svg>" alt="Logo Phòng Gym" />
+                                            <img id="imgLogoPreview" src="" alt="Logo Phòng Gym" />
                                         </div>
                                         <div>
                                             <label class="form-label fw-semibold mb-1" for="inpLogo">Logo &amp; Ảnh đại diện cơ sở</label>
@@ -233,50 +238,6 @@
                                             <label class="form-label" for="txtEmailGym">Email Liên Hệ</label>
                                             <input type="email" id="txtEmailGym" class="form-control" value="contact@n7fitness.com" />
                                         </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Card 2: Cấu hình ngày nghỉ / lễ -->
-                            <div class="card shadow-sm border-0">
-                                <div class="card-body p-4">
-                                    <div class="mb-3">
-                                        <h6 class="fw-bold mb-1 text-success">
-                                            <i class="bi bi-calendar-x me-1"></i> Cấu hình ngày nghỉ / lễ &amp; Bảo trì
-                                        </h6>
-                                        <small class="text-muted">Danh sách ngày phòng gym đóng cửa để khóa đặt lịch tập &amp; PT vào những ngày này.</small>
-                                    </div>
-
-                                    <!-- Form thêm ngày nghỉ -->
-                                    <div class="row g-2 align-items-end mb-4 bg-light p-3 rounded border">
-                                        <div class="col-md-3">
-                                            <label class="form-label small fw-semibold" for="txtNgayNghi">Chọn ngày nghỉ</label>
-                                            <input type="date" id="txtNgayNghi" class="form-control" />
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label class="form-label small fw-semibold" for="txtLyDoNghi">Lý do / Ghi chú ngày lễ</label>
-                                            <input type="text" id="txtLyDoNghi" class="form-control" placeholder="VD: Nghỉ lễ Quốc Khánh 2/9, Bảo trì thiết bị..." />
-                                        </div>
-                                        <div class="col-md-3">
-                                            <button type="button" id="btnThemNgayNghi" class="btn btn-outline-success w-100 fw-semibold">
-                                                <i class="bi bi-plus-circle me-1"></i>Thêm Ngày Nghỉ
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    <!-- Bảng danh sách ngày nghỉ -->
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered table-hover align-middle mb-0">
-                                            <thead class="table-light">
-                                                <tr>
-                                                    <th style="width: 180px;">Ngày Nghỉ</th>
-                                                    <th>Lý Do / Sự Kiện</th>
-                                                    <th style="width: 110px;" class="text-center">Thao Tác</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="holidayTableBody">
-                                            </tbody>
-                                        </table>
                                     </div>
                                 </div>
                             </div>
@@ -316,17 +277,63 @@
                                         <div class="col-md-4 text-center">
                                             <div class="p-3 border rounded bg-light">
                                                 <div class="small fw-semibold text-muted mb-2">Xem trước mã VietQR</div>
-                                                <img id="imgVietQR" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Mã VietQR" class="img-fluid rounded border bg-white p-1" style="max-height: 190px;" />
+                                                <img id="imgVietQR" src="" alt="Mã VietQR" class="img-fluid rounded border bg-white p-1" style="max-height: 190px;" />
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Tab 3: Ngày nghỉ / lễ & Bảo trì (Thêm - Sửa - Xóa) -->
+                        <div class="tab-pane fade" id="holiday-tab-pane" role="tabpanel">
+                            <div class="card shadow-sm border-0">
+                                <div class="card-body p-4">
+                                    <div class="mb-3">
+                                        <h6 class="fw-bold mb-1 text-success">
+                                            <i class="bi bi-calendar-x me-1"></i> Cấu hình ngày nghỉ / lễ &amp; Bảo trì
+                                        </h6>
+                                        <small class="text-muted">Danh sách ngày phòng gym đóng cửa để khóa đặt lịch tập &amp; PT vào những ngày này. Các thay đổi ở tab này được lưu tự động.</small>
+                                    </div>
+
+                                    <!-- Form thêm ngày nghỉ -->
+                                    <div class="row g-2 align-items-end mb-4 bg-light p-3 rounded border">
+                                        <div class="col-md-3">
+                                            <label class="form-label small fw-semibold" for="txtNgayNghi">Chọn ngày nghỉ</label>
+                                            <input type="date" id="txtNgayNghi" class="form-control" />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label small fw-semibold" for="txtLyDoNghi">Lý do / Ghi chú ngày lễ</label>
+                                            <input type="text" id="txtLyDoNghi" class="form-control" placeholder="VD: Nghỉ lễ Quốc Khánh 2/9, Bảo trì thiết bị..." />
+                                        </div>
+                                        <div class="col-md-3">
+                                            <button type="button" id="btnThemNgayNghi" class="btn btn-outline-success w-100 fw-semibold">
+                                                <i class="bi bi-plus-circle me-1"></i>Thêm Ngày Nghỉ
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Bảng danh sách ngày nghỉ -->
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-hover align-middle mb-0">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th style="width: 180px;">Ngày Nghỉ</th>
+                                                    <th>Lý Do / Sự Kiện</th>
+                                                    <th style="width: 190px;" class="text-center">Thao Tác</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="holidayTableBody">
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Nút Lưu Cài Đặt -->
-                    <div class="mt-4 d-flex justify-content-end gap-2">
+                    <!-- Nút Lưu Cài Đặt (ẩn ở tab Ngày nghỉ vì tab đó tự lưu) -->
+                    <div class="mt-4 d-flex justify-content-end gap-2" id="actionBar">
                         <button type="button" id="btnRestoreDefault" class="btn btn-outline-secondary px-3 py-2">
                             Khôi phục mặc định
                         </button>
@@ -339,6 +346,35 @@
                 <footer class="main-footer">
                     &copy; 2026 - Giao diện quản trị Admin WebForms.
                 </footer>
+            </div>
+        </div>
+
+        <!-- Modal sửa ngày nghỉ -->
+        <div class="modal fade" id="modalSuaNgayNghi" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title"><i class="bi bi-pencil-square me-2"></i>Sửa ngày nghỉ / lễ</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="editOldDate" />
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold" for="editDate">Ngày nghỉ <span class="text-danger">*</span></label>
+                            <input type="date" id="editDate" class="form-control" />
+                        </div>
+                        <div class="mb-0">
+                            <label class="form-label fw-semibold" for="editReason">Lý do / Ghi chú</label>
+                            <input type="text" id="editReason" class="form-control" maxlength="150" />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <button type="button" class="btn btn-primary" id="btnLuuSuaNgayNghi">
+                            <i class="bi bi-check-circle me-1"></i>Lưu thay đổi
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -417,6 +453,7 @@
             }
 
             var settings = loadSettings();
+            if (!Array.isArray(settings.holidays)) { settings.holidays = []; }
 
             /* ===================== HIỂN THỊ DỮ LIỆU ===================== */
             function renderForm() {
@@ -442,10 +479,13 @@
                 $('imgVietQR').src = 'https://img.vietqr.io/image/' + bank + '-' + accNo + '-compact2.png?accountName=' + accName;
             }
 
+            /* ===================== NGÀY NGHỈ / LỄ: HIỂN THỊ ===================== */
             function renderHolidays() {
                 var list = (settings.holidays || []).slice().sort(function (a, b) {
                     return a.date.localeCompare(b.date);
                 });
+
+                $('holidayCount').textContent = list.length;
 
                 if (list.length === 0) {
                     $('holidayTableBody').innerHTML = '<tr><td colspan="3" class="text-center text-muted py-3">Hiện chưa có ngày nghỉ/lễ nào được thiết lập.</td></tr>';
@@ -457,8 +497,12 @@
                         '<td><span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-1 fs-6">' +
                         '<i class="bi bi-calendar-event me-1"></i>' + fmtDate(h.date) + '</span></td>' +
                         '<td>' + esc(h.reason) + '</td>' +
-                        '<td class="text-center"><button type="button" class="btn btn-sm btn-outline-danger" data-del-date="' + esc(h.date) + '">' +
-                        '<i class="bi bi-trash"></i> Xóa</button></td>' +
+                        '<td class="text-center">' +
+                        '<button type="button" class="btn btn-sm btn-outline-primary me-1" data-edit-date="' + esc(h.date) + '">' +
+                        '<i class="bi bi-pencil-square"></i> Sửa</button>' +
+                        '<button type="button" class="btn btn-sm btn-outline-danger" data-del-date="' + esc(h.date) + '">' +
+                        '<i class="bi bi-trash"></i> Xóa</button>' +
+                        '</td>' +
                         '</tr>';
                 }).join('');
             }
@@ -486,8 +530,8 @@
                 $('inpLogo').value = '';
             });
 
-            /* ===================== SỰ KIỆN NGÀY NGHỈ / LỄ ===================== */
-            $('btnThemNgayNghi').addEventListener('click', function () {
+            /* ===================== NGÀY NGHỈ / LỄ: THÊM ===================== */
+            function themNgayNghi() {
                 var dateVal = $('txtNgayNghi').value;
                 var reasonVal = $('txtLyDoNghi').value.trim() || 'Nghỉ lễ / Bảo trì định kỳ';
 
@@ -509,18 +553,84 @@
                 $('txtLyDoNghi').value = '';
                 renderHolidays();
                 toast('Đã thêm ngày nghỉ ' + fmtDate(dateVal));
+            }
+
+            $('btnThemNgayNghi').addEventListener('click', themNgayNghi);
+            $('txtLyDoNghi').addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') { e.preventDefault(); themNgayNghi(); }
             });
 
-            $('holidayTableBody').addEventListener('click', function (e) {
-                var btn = e.target.closest('[data-del-date]');
-                if (!btn) return;
-                var dateStr = btn.getAttribute('data-del-date');
-                if (!confirm('Xóa ngày nghỉ ' + fmtDate(dateStr) + '?')) return;
+            /* ===================== NGÀY NGHỈ / LỄ: SỬA & XÓA ===================== */
+            var modalEdit = new bootstrap.Modal($('modalSuaNgayNghi'));
 
-                settings.holidays = settings.holidays.filter(function (h) { return h.date !== dateStr; });
+            $('holidayTableBody').addEventListener('click', function (e) {
+                // Nút Sửa
+                var btnEdit = e.target.closest('[data-edit-date]');
+                if (btnEdit) {
+                    var oldDate = btnEdit.getAttribute('data-edit-date');
+                    var item = settings.holidays.filter(function (h) { return h.date === oldDate; })[0];
+                    if (!item) return;
+                    $('editOldDate').value = item.date;
+                    $('editDate').value = item.date;
+                    $('editReason').value = item.reason;
+                    modalEdit.show();
+                    return;
+                }
+
+                // Nút Xóa
+                var btnDel = e.target.closest('[data-del-date]');
+                if (btnDel) {
+                    var dateStr = btnDel.getAttribute('data-del-date');
+                    if (!confirm('Xóa ngày nghỉ ' + fmtDate(dateStr) + '?')) return;
+
+                    settings.holidays = settings.holidays.filter(function (h) { return h.date !== dateStr; });
+                    saveSettingsToStorage(settings);
+                    renderHolidays();
+                    toast('Đã xóa ngày nghỉ ' + fmtDate(dateStr), 'secondary');
+                }
+            });
+
+            function luuSuaNgayNghi() {
+                var oldDate = $('editOldDate').value;
+                var newDate = $('editDate').value;
+                var newReason = $('editReason').value.trim() || 'Nghỉ lễ / Bảo trì định kỳ';
+
+                if (!newDate) {
+                    toast('Vui lòng chọn ngày nghỉ hợp lệ!', 'warning');
+                    return;
+                }
+
+                // Đổi sang ngày đã tồn tại ở dòng khác thì không cho phép
+                var trung = settings.holidays.some(function (h) {
+                    return h.date === newDate && h.date !== oldDate;
+                });
+                if (trung) {
+                    toast('Ngày ' + fmtDate(newDate) + ' đã có trong danh sách ngày nghỉ!', 'warning');
+                    return;
+                }
+
+                settings.holidays.forEach(function (h) {
+                    if (h.date === oldDate) {
+                        h.date = newDate;
+                        h.reason = newReason;
+                    }
+                });
                 saveSettingsToStorage(settings);
                 renderHolidays();
-                toast('Đã xóa ngày nghỉ ' + fmtDate(dateStr), 'secondary');
+                modalEdit.hide();
+                toast('Đã cập nhật ngày nghỉ ' + fmtDate(newDate));
+            }
+
+            $('btnLuuSuaNgayNghi').addEventListener('click', luuSuaNgayNghi);
+            $('modalSuaNgayNghi').addEventListener('keydown', function (e) {
+                if (e.key === 'Enter' && e.target.tagName !== 'BUTTON') { e.preventDefault(); luuSuaNgayNghi(); }
+            });
+            $('modalSuaNgayNghi').addEventListener('shown.bs.modal', function () { $('editReason').focus(); });
+
+            /* ===================== ẨN/HIỆN THANH NÚT LƯU THEO TAB ===================== */
+            $('settingTabs').addEventListener('shown.bs.tab', function (e) {
+                var isHolidayTab = e.target.id === 'holiday-tab';
+                $('actionBar').classList.toggle('d-none', isHolidayTab);
             });
 
             /* ===================== LƯU TOÀN BỘ CẤU HÌNH ===================== */
@@ -551,7 +661,7 @@
             });
 
             $('btnRestoreDefault').addEventListener('click', function () {
-                if (!confirm('Khôi phục toàn bộ cài đặt về mặc định ban đầu?')) return;
+                if (!confirm('Khôi phục toàn bộ cài đặt về mặc định ban đầu (gồm cả danh sách ngày nghỉ)?')) return;
                 settings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
                 saveSettingsToStorage(settings);
                 renderForm();
