@@ -316,7 +316,7 @@
                                         <div class="col-md-4 text-center">
                                             <div class="p-3 border rounded bg-light">
                                                 <div class="small fw-semibold text-muted mb-2">Xem trước mã VietQR</div>
-                                                <img id="imgVietQR" src="" alt="Mã VietQR" class="img-fluid rounded border bg-white p-1" style="max-height: 190px;" />
+                                                <img id="imgVietQR" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Mã VietQR" class="img-fluid rounded border bg-white p-1" style="max-height: 190px;" />
                                             </div>
                                         </div>
                                     </div>
