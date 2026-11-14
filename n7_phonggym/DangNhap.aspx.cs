@@ -12,10 +12,12 @@ namespace n7_phonggym
         {
             if (!IsPostBack)
             {
-                // Nếu đã đăng nhập rồi thì chuyển thẳng vào trang Tổng quan
+                // Đã đăng nhập rồi thì chuyển thẳng vào trang Tổng quan
                 if (Session["ID_TK"] != null)
                 {
-                    Response.Redirect("WebForm1.aspx");
+                    Response.Redirect("WebForm1.aspx", false);
+                    Context.ApplicationInstance.CompleteRequest();
+                    return;
                 }
 
                 // Tự điền lại tên đăng nhập nếu có cookie "ghi nhớ đăng nhập"
@@ -39,16 +41,21 @@ namespace n7_phonggym
                 return;
             }
 
-            // Lấy chuỗi kết nối từ Web.config (đổi tên "GymConnectionString" cho khớp với Web.config của bạn)
-            string connStr = ConfigurationManager.ConnectionStrings["GymConnectionString"].ConnectionString;
-
             string query = @"SELECT ID_TK, TenDangNhap, VaiTro, ID_MNV, TrangThai
-                              FROM TAI_KHOAN
-                              WHERE TenDangNhap = @TenDangNhap AND MatKhau = @MatKhau";
+                             FROM TAI_KHOAN
+                             WHERE TenDangNhap = @TenDangNhap AND MatKhau = @MatKhau";
 
             try
             {
-                using (SqlConnection conn = new SqlConnection(connStr))
+                // Đổi "GymConnectionString" cho khớp với tên trong Web.config của bạn
+                ConnectionStringSettings setting = ConfigurationManager.ConnectionStrings["GymConnectionString"];
+                if (setting == null)
+                {
+                    ShowError("Chưa cấu hình chuỗi kết nối 'GymConnectionString' trong Web.config.");
+                    return;
+                }
+
+                using (SqlConnection conn = new SqlConnection(setting.ConnectionString))
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@TenDangNhap", tenDangNhap);
@@ -58,13 +65,15 @@ namespace n7_phonggym
 
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
+                        // SAI tên đăng nhập hoặc mật khẩu -> báo lỗi, ở lại trang
                         if (!reader.Read())
                         {
                             ShowError("Tên đăng nhập hoặc mật khẩu không đúng.");
                             return;
                         }
 
-                        bool trangThai = Convert.ToBoolean(reader["TrangThai"]);
+                        bool trangThai = reader["TrangThai"] != DBNull.Value
+                                         && Convert.ToBoolean(reader["TrangThai"]);
                         if (!trangThai)
                         {
                             ShowError("Tài khoản đã bị khóa. Vui lòng liên hệ Admin.");
@@ -98,12 +107,14 @@ namespace n7_phonggym
                 Response.Cookies.Add(new HttpCookie("RememberLogin") { Expires = DateTime.Now.AddDays(-1) });
             }
 
-            Response.Redirect("WebForm1.aspx");
+            // ĐÚNG -> chuyển tới trang Tổng quan
+            Response.Redirect("WebForm1.aspx", false);
+            Context.ApplicationInstance.CompleteRequest();
         }
 
         private void ShowError(string message)
         {
-            litMessage.Text = message;
+            litMessage.Text = Server.HtmlEncode(message);
             pnlAlert.Visible = true;
         }
     }
