@@ -1,6 +1,6 @@
 USE [master]
 GO
-/****** Object:  Database [n7_phongGym]    Script Date: 11/13/2026 8:20:05 PM ******/
+/****** Object:  Database [n7_phongGym]    Script Date: 11/14/2026 4:10:53 PM ******/
 CREATE DATABASE [n7_phongGym]
  CONTAINMENT = NONE
  ON  PRIMARY 
@@ -75,7 +75,54 @@ ALTER DATABASE [n7_phongGym] SET TARGET_RECOVERY_TIME = 0 SECONDS
 GO
 USE [n7_phongGym]
 GO
-/****** Object:  Table [dbo].[CHI_TIET_DANG_KI]    Script Date: 11/13/2026 8:20:05 PM ******/
+/****** Object:  Table [dbo].[CAI_DAT_HE_THONG]    Script Date: 11/14/2026 4:10:53 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[CAI_DAT_HE_THONG](
+	[ID] [int] NOT NULL,
+	[TenGym] [nvarchar](150) NOT NULL,
+	[Hotline] [nvarchar](30) NOT NULL,
+	[DiaChi] [nvarchar](255) NOT NULL,
+	[GioMoCua] [nvarchar](50) NOT NULL,
+	[Email] [nvarchar](100) NOT NULL,
+	[Logo] [nvarchar](max) NULL,
+	[BankCode] [varchar](10) NOT NULL,
+	[AccountNumber] [varchar](30) NOT NULL,
+	[AccountName] [nvarchar](100) NOT NULL,
+	[KenhApp] [bit] NOT NULL,
+	[KenhEmail] [bit] NOT NULL,
+	[KenhSms] [bit] NOT NULL,
+	[KenhZalo] [bit] NOT NULL,
+	[GioGuiNhac] [varchar](5) NOT NULL,
+	[KpTu] [varchar](5) NOT NULL,
+	[KpDen] [varchar](5) NOT NULL,
+	[HetHanSapToi] [bit] NOT NULL,
+	[NgayTruoc] [int] NOT NULL,
+	[DaHetHan] [bit] NOT NULL,
+	[NhacLichPT] [bit] NOT NULL,
+	[GioTruocPT] [int] NOT NULL,
+	[SinhNhat] [bit] NOT NULL,
+	[HoiVienMoi] [bit] NOT NULL,
+	[ThanhToan] [bit] NOT NULL,
+	[BaoCaoNgay] [bit] NOT NULL,
+	[EmailBaoCao] [nvarchar](100) NOT NULL,
+	[GioBaoCao] [varchar](5) NOT NULL,
+	[MauTin] [nvarchar](500) NOT NULL,
+	[NgayCapNhat] [datetime] NOT NULL,
+ CONSTRAINT [PK_CAI_DAT_HE_THONG] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+
+GO
+SET ANSI_PADDING OFF
+GO
+/****** Object:  Table [dbo].[CHI_TIET_DANG_KI]    Script Date: 11/14/2026 4:10:53 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -92,7 +139,7 @@ CREATE TABLE [dbo].[CHI_TIET_DANG_KI](
 ) ON [PRIMARY]
 
 GO
-/****** Object:  Table [dbo].[GOI_TAP]    Script Date: 11/13/2026 8:20:05 PM ******/
+/****** Object:  Table [dbo].[GOI_TAP]    Script Date: 11/14/2026 4:10:53 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -112,7 +159,7 @@ CREATE TABLE [dbo].[GOI_TAP](
 ) ON [PRIMARY]
 
 GO
-/****** Object:  Table [dbo].[HOI_VIEN]    Script Date: 11/13/2026 8:20:05 PM ******/
+/****** Object:  Table [dbo].[HOI_VIEN]    Script Date: 11/14/2026 4:10:53 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -130,7 +177,7 @@ CREATE TABLE [dbo].[HOI_VIEN](
 ) ON [PRIMARY]
 
 GO
-/****** Object:  Table [dbo].[HUAN_LUYEN_VIEN]    Script Date: 11/13/2026 8:20:05 PM ******/
+/****** Object:  Table [dbo].[HUAN_LUYEN_VIEN]    Script Date: 11/14/2026 4:10:53 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -146,7 +193,7 @@ CREATE TABLE [dbo].[HUAN_LUYEN_VIEN](
 ) ON [PRIMARY]
 
 GO
-/****** Object:  Table [dbo].[HuanLuyenVien]    Script Date: 11/13/2026 8:20:05 PM ******/
+/****** Object:  Table [dbo].[HuanLuyenVien]    Script Date: 11/14/2026 4:10:53 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -162,7 +209,7 @@ CREATE TABLE [dbo].[HuanLuyenVien](
 ) ON [PRIMARY]
 
 GO
-/****** Object:  Table [dbo].[LK_DANG_KY]    Script Date: 11/13/2026 8:20:05 PM ******/
+/****** Object:  Table [dbo].[LK_DANG_KY]    Script Date: 11/14/2026 4:10:53 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -182,7 +229,7 @@ CREATE TABLE [dbo].[LK_DANG_KY](
 ) ON [PRIMARY]
 
 GO
-/****** Object:  Table [dbo].[LK_LICH_TAP]    Script Date: 11/13/2026 8:20:05 PM ******/
+/****** Object:  Table [dbo].[LK_LICH_TAP]    Script Date: 11/14/2026 4:10:53 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -204,7 +251,22 @@ CREATE TABLE [dbo].[LK_LICH_TAP](
 ) ON [PRIMARY]
 
 GO
-/****** Object:  Table [dbo].[NHAN_VIEN]    Script Date: 11/13/2026 8:20:05 PM ******/
+/****** Object:  Table [dbo].[NGAY_NGHI]    Script Date: 11/14/2026 4:10:53 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[NGAY_NGHI](
+	[NgayNghi] [date] NOT NULL,
+	[LyDo] [nvarchar](150) NOT NULL,
+ CONSTRAINT [PK_NGAY_NGHI] PRIMARY KEY CLUSTERED 
+(
+	[NgayNghi] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[NHAN_VIEN]    Script Date: 11/14/2026 4:10:53 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -223,7 +285,7 @@ CREATE TABLE [dbo].[NHAN_VIEN](
 ) ON [PRIMARY]
 
 GO
-/****** Object:  Table [dbo].[PT_CHUYEN_GIA]    Script Date: 11/13/2026 8:20:05 PM ******/
+/****** Object:  Table [dbo].[PT_CHUYEN_GIA]    Script Date: 11/14/2026 4:10:53 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -239,7 +301,7 @@ CREATE TABLE [dbo].[PT_CHUYEN_GIA](
 ) ON [PRIMARY]
 
 GO
-/****** Object:  Table [dbo].[PT_ChuyenGia]    Script Date: 11/13/2026 8:20:05 PM ******/
+/****** Object:  Table [dbo].[PT_ChuyenGia]    Script Date: 11/14/2026 4:10:53 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -255,7 +317,7 @@ CREATE TABLE [dbo].[PT_ChuyenGia](
 ) ON [PRIMARY]
 
 GO
-/****** Object:  Table [dbo].[TAI_KHOAN]    Script Date: 11/13/2026 8:20:05 PM ******/
+/****** Object:  Table [dbo].[TAI_KHOAN]    Script Date: 11/14/2026 4:10:53 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -279,6 +341,7 @@ CREATE TABLE [dbo].[TAI_KHOAN](
 GO
 SET ANSI_PADDING OFF
 GO
+INSERT [dbo].[CAI_DAT_HE_THONG] ([ID], [TenGym], [Hotline], [DiaChi], [GioMoCua], [Email], [Logo], [BankCode], [AccountNumber], [AccountName], [KenhApp], [KenhEmail], [KenhSms], [KenhZalo], [GioGuiNhac], [KpTu], [KpDen], [HetHanSapToi], [NgayTruoc], [DaHetHan], [NhacLichPT], [GioTruocPT], [SinhNhat], [HoiVienMoi], [ThanhToan], [BaoCaoNgay], [EmailBaoCao], [GioBaoCao], [MauTin], [NgayCapNhat]) VALUES (1, N'Hệ Thống Phòng Gym N7 Fitness', N'1900 6789', N'123 Đường Số 7, Phường Linh Trung, TP. Thủ Đức, TP.HCM', N'05:30 - 21:30', N'contact@n7fitness.com', NULL, N'MB', N'999988887777', N'CTY TNHH PHONG GYM N7', 1, 1, 0, 0, N'08:00', N'22:00', N'06:00', 1, 7, 1, 1, 2, 0, 1, 1, 1, N'contact@n7fitness.com', N'21:30', N'Chào {TenHoiVien}, gói {TenGoi} của bạn sẽ hết hạn vào {NgayHetHan}. Vui lòng gia hạn để tiếp tục tập luyện tại {TenGym}. Hotline: {Hotline}', CAST(0x0000B502010901EB AS DateTime))
 INSERT [dbo].[CHI_TIET_DANG_KI] ([ID_CTG], [ID_MGT], [TenChiTietGoi], [SoLuongHVToiDa]) VALUES (101, 1, N'Cơ Bản - Ca Sáng', 30)
 INSERT [dbo].[CHI_TIET_DANG_KI] ([ID_CTG], [ID_MGT], [TenChiTietGoi], [SoLuongHVToiDa]) VALUES (102, 2, N'Tiêu Chuẩn - Ca Chiều', 20)
 INSERT [dbo].[CHI_TIET_DANG_KI] ([ID_CTG], [ID_MGT], [TenChiTietGoi], [SoLuongHVToiDa]) VALUES (103, 3, N'Nâng Cao - Ca Tối', 15)
@@ -312,6 +375,7 @@ INSERT [dbo].[LK_LICH_TAP] ([ID_CTG], [ID_MNV], [NgayTap], [KhungGio], [SoLuongH
 INSERT [dbo].[LK_LICH_TAP] ([ID_CTG], [ID_MNV], [NgayTap], [KhungGio], [SoLuongHV], [DanhGiaBuoi]) VALUES (102, 2, CAST(0x524A0B00 AS Date), N'16:00 - 18:00', 10, N'Hội viên tiến bộ rõ rệt')
 INSERT [dbo].[LK_LICH_TAP] ([ID_CTG], [ID_MNV], [NgayTap], [KhungGio], [SoLuongHV], [DanhGiaBuoi]) VALUES (103, 3, CAST(0x534A0B00 AS Date), N'18:00 - 20:00', 8, N'Cường độ cao, cần chú ý khởi động')
 INSERT [dbo].[LK_LICH_TAP] ([ID_CTG], [ID_MNV], [NgayTap], [KhungGio], [SoLuongHV], [DanhGiaBuoi]) VALUES (104, 3, CAST(0x544A0B00 AS Date), N'19:00 - 20:30', 2, N'Buổi tập 1:1 hiệu quả')
+INSERT [dbo].[NGAY_NGHI] ([NgayNghi], [LyDo]) VALUES (CAST(0x144A0B00 AS Date), N'Nghỉ lễ Quốc Khánh 2/9')
 INSERT [dbo].[NHAN_VIEN] ([ID_MNV], [HoTen], [NgaySinh], [GioiTinh], [TrinhDo], [ChuyenMon]) VALUES (1, N'Đặng Quốc Huy', CAST(0x01190B00 AS Date), N'Nam', N'Cử nhân TDTT', N'Thể hình')
 INSERT [dbo].[NHAN_VIEN] ([ID_MNV], [HoTen], [NgaySinh], [GioiTinh], [TrinhDo], [ChuyenMon]) VALUES (2, N'Bùi Thu Hà', CAST(0x5D1C0B00 AS Date), N'Nữ', N'Cử nhân TDTT', N'Yoga & Giảm cân')
 INSERT [dbo].[NHAN_VIEN] ([ID_MNV], [HoTen], [NgaySinh], [GioiTinh], [TrinhDo], [ChuyenMon]) VALUES (3, N'Ngô Thanh Sơn', CAST(0x12170B00 AS Date), N'Nam', N'Thạc sĩ TDTT', N'Powerlifting')
@@ -330,11 +394,13 @@ SET IDENTITY_INSERT [dbo].[TAI_KHOAN] OFF
 SET ANSI_PADDING ON
 
 GO
-/****** Object:  Index [UQ_TAI_KHOAN_TenDangNhap]    Script Date: 11/13/2026 8:20:05 PM ******/
+/****** Object:  Index [UQ_TAI_KHOAN_TenDangNhap]    Script Date: 11/14/2026 4:10:53 PM ******/
 ALTER TABLE [dbo].[TAI_KHOAN] ADD  CONSTRAINT [UQ_TAI_KHOAN_TenDangNhap] UNIQUE NONCLUSTERED 
 (
 	[TenDangNhap] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[CAI_DAT_HE_THONG] ADD  CONSTRAINT [DF_CAI_DAT_NgayCapNhat]  DEFAULT (getdate()) FOR [NgayCapNhat]
 GO
 ALTER TABLE [dbo].[TAI_KHOAN] ADD  CONSTRAINT [DF_TAI_KHOAN_TrangThai]  DEFAULT ((1)) FOR [TrangThai]
 GO
@@ -384,6 +450,18 @@ ALTER TABLE [dbo].[TAI_KHOAN]  WITH CHECK ADD  CONSTRAINT [FK_TAI_KHOAN_NHAN_VIE
 REFERENCES [dbo].[NHAN_VIEN] ([ID_MNV])
 GO
 ALTER TABLE [dbo].[TAI_KHOAN] CHECK CONSTRAINT [FK_TAI_KHOAN_NHAN_VIEN]
+GO
+ALTER TABLE [dbo].[CAI_DAT_HE_THONG]  WITH CHECK ADD  CONSTRAINT [CK_CAI_DAT_GioTruocPT] CHECK  (([GioTruocPT]>=(1) AND [GioTruocPT]<=(48)))
+GO
+ALTER TABLE [dbo].[CAI_DAT_HE_THONG] CHECK CONSTRAINT [CK_CAI_DAT_GioTruocPT]
+GO
+ALTER TABLE [dbo].[CAI_DAT_HE_THONG]  WITH CHECK ADD  CONSTRAINT [CK_CAI_DAT_ID] CHECK  (([ID]=(1)))
+GO
+ALTER TABLE [dbo].[CAI_DAT_HE_THONG] CHECK CONSTRAINT [CK_CAI_DAT_ID]
+GO
+ALTER TABLE [dbo].[CAI_DAT_HE_THONG]  WITH CHECK ADD  CONSTRAINT [CK_CAI_DAT_NgayTruoc] CHECK  (([NgayTruoc]>=(1) AND [NgayTruoc]<=(60)))
+GO
+ALTER TABLE [dbo].[CAI_DAT_HE_THONG] CHECK CONSTRAINT [CK_CAI_DAT_NgayTruoc]
 GO
 ALTER TABLE [dbo].[CHI_TIET_DANG_KI]  WITH CHECK ADD  CONSTRAINT [CK_CHI_TIET_GOI_SoLuongHVToiDa] CHECK  (([SoLuongHVToiDa]>(0)))
 GO
