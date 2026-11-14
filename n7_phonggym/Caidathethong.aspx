@@ -190,6 +190,11 @@
                                 <span class="badge rounded-pill text-bg-danger ms-1" id="holidayCount">0</span>
                             </button>
                         </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link fw-semibold" id="notify-tab" data-bs-toggle="tab" data-bs-target="#notify-tab-pane" type="button" role="tab">
+                                <i class="bi bi-bell me-1"></i> Cấu Hình Thông Báo
+                            </button>
+                        </li>
                     </ul>
 
                     <div class="tab-content" id="settingTabsContent">
@@ -330,6 +335,171 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Tab 4: Cấu hình thông báo -->
+                        <div class="tab-pane fade" id="notify-tab-pane" role="tabpanel">
+                            <div class="row g-4">
+                                <!-- Kênh gửi & thời gian gửi -->
+                                <div class="col-lg-6">
+                                    <div class="card shadow-sm border-0 h-100">
+                                        <div class="card-body p-4">
+                                            <h6 class="fw-bold mb-1 text-success">
+                                                <i class="bi bi-send me-1"></i> Kênh gửi thông báo
+                                            </h6>
+                                            <small class="text-muted d-block mb-3">Chọn các kênh hệ thống dùng để gửi thông báo.</small>
+
+                                            <div class="form-check form-switch mb-2">
+                                                <input class="form-check-input" type="checkbox" role="switch" id="chkKenhApp" />
+                                                <label class="form-check-label" for="chkKenhApp"><i class="bi bi-window-stack me-1"></i>Thông báo trên trang quản trị</label>
+                                            </div>
+                                            <div class="form-check form-switch mb-2">
+                                                <input class="form-check-input" type="checkbox" role="switch" id="chkKenhEmail" />
+                                                <label class="form-check-label" for="chkKenhEmail"><i class="bi bi-envelope me-1"></i>Email</label>
+                                            </div>
+                                            <div class="form-check form-switch mb-2">
+                                                <input class="form-check-input" type="checkbox" role="switch" id="chkKenhSms" />
+                                                <label class="form-check-label" for="chkKenhSms"><i class="bi bi-chat-dots me-1"></i>Tin nhắn SMS</label>
+                                            </div>
+                                            <div class="form-check form-switch mb-2">
+                                                <input class="form-check-input" type="checkbox" role="switch" id="chkKenhZalo" />
+                                                <label class="form-check-label" for="chkKenhZalo"><i class="bi bi-chat-heart me-1"></i>Zalo</label>
+                                            </div>
+
+                                            <hr class="my-3" />
+
+                                            <h6 class="fw-bold mb-3 text-success">
+                                                <i class="bi bi-clock-history me-1"></i> Thời gian gửi
+                                            </h6>
+                                            <div class="row g-3">
+                                                <div class="col-12">
+                                                    <label class="form-label small fw-semibold" for="timeGuiNhac">Giờ gửi nhắc nhở hằng ngày</label>
+                                                    <input type="time" id="timeGuiNhac" class="form-control" />
+                                                </div>
+                                                <div class="col-6">
+                                                    <label class="form-label small fw-semibold" for="timeKhongPhienTu">Không làm phiền từ</label>
+                                                    <input type="time" id="timeKhongPhienTu" class="form-control" />
+                                                </div>
+                                                <div class="col-6">
+                                                    <label class="form-label small fw-semibold" for="timeKhongPhienDen">Đến</label>
+                                                    <input type="time" id="timeKhongPhienDen" class="form-control" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Nhắc nhở hội viên -->
+                                <div class="col-lg-6">
+                                    <div class="card shadow-sm border-0 h-100">
+                                        <div class="card-body p-4">
+                                            <h6 class="fw-bold mb-1 text-success">
+                                                <i class="bi bi-people me-1"></i> Nhắc nhở hội viên
+                                            </h6>
+                                            <small class="text-muted d-block mb-3">Tự động gửi thông báo đến hội viên theo tình trạng gói tập và lịch tập.</small>
+
+                                            <div class="mb-3">
+                                                <div class="form-check form-switch mb-1">
+                                                    <input class="form-check-input" type="checkbox" role="switch" id="chkHetHanSapToi" />
+                                                    <label class="form-check-label fw-semibold" for="chkHetHanSapToi">Nhắc gói tập sắp hết hạn</label>
+                                                </div>
+                                                <div class="input-group input-group-sm ms-4" style="max-width: 240px;">
+                                                    <span class="input-group-text">Trước</span>
+                                                    <input type="number" id="numNgayTruoc" class="form-control" min="1" max="60" />
+                                                    <span class="input-group-text">ngày</span>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-check form-switch mb-3">
+                                                <input class="form-check-input" type="checkbox" role="switch" id="chkDaHetHan" />
+                                                <label class="form-check-label fw-semibold" for="chkDaHetHan">Thông báo khi gói tập đã hết hạn</label>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <div class="form-check form-switch mb-1">
+                                                    <input class="form-check-input" type="checkbox" role="switch" id="chkNhacLichPT" />
+                                                    <label class="form-check-label fw-semibold" for="chkNhacLichPT">Nhắc lịch tập với PT</label>
+                                                </div>
+                                                <div class="input-group input-group-sm ms-4" style="max-width: 240px;">
+                                                    <span class="input-group-text">Trước</span>
+                                                    <input type="number" id="numGioTruocPT" class="form-control" min="1" max="48" />
+                                                    <span class="input-group-text">giờ</span>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-check form-switch mb-0">
+                                                <input class="form-check-input" type="checkbox" role="switch" id="chkSinhNhat" />
+                                                <label class="form-check-label fw-semibold" for="chkSinhNhat">Gửi lời chúc mừng sinh nhật</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Thông báo cho quản trị -->
+                                <div class="col-12">
+                                    <div class="card shadow-sm border-0">
+                                        <div class="card-body p-4">
+                                            <h6 class="fw-bold mb-1 text-success">
+                                                <i class="bi bi-shield-check me-1"></i> Thông báo cho quản trị viên
+                                            </h6>
+                                            <small class="text-muted d-block mb-3">Các sự kiện hệ thống sẽ báo cho quản trị viên.</small>
+
+                                            <div class="row g-3 align-items-end">
+                                                <div class="col-md-4">
+                                                    <div class="form-check form-switch mb-2">
+                                                        <input class="form-check-input" type="checkbox" role="switch" id="chkHoiVienMoi" />
+                                                        <label class="form-check-label" for="chkHoiVienMoi">Có hội viên mới đăng ký</label>
+                                                    </div>
+                                                    <div class="form-check form-switch mb-0">
+                                                        <input class="form-check-input" type="checkbox" role="switch" id="chkThanhToan" />
+                                                        <label class="form-check-label" for="chkThanhToan">Thanh toán thành công</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <div class="form-check form-switch mb-2">
+                                                        <input class="form-check-input" type="checkbox" role="switch" id="chkBaoCaoNgay" />
+                                                        <label class="form-check-label fw-semibold" for="chkBaoCaoNgay">Gửi báo cáo doanh thu cuối ngày</label>
+                                                    </div>
+                                                    <div class="row g-2">
+                                                        <div class="col-md-8">
+                                                            <label class="form-label small fw-semibold" for="txtEmailBaoCao">Email nhận báo cáo</label>
+                                                            <input type="email" id="txtEmailBaoCao" class="form-control" placeholder="admin@n7fitness.com" />
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <label class="form-label small fw-semibold" for="timeBaoCao">Giờ gửi báo cáo</label>
+                                                            <input type="time" id="timeBaoCao" class="form-control" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Mẫu tin nhắn -->
+                                <div class="col-12">
+                                    <div class="card shadow-sm border-0">
+                                        <div class="card-body p-4">
+                                            <h6 class="fw-bold mb-1 text-success">
+                                                <i class="bi bi-card-text me-1"></i> Mẫu nội dung nhắc hội viên
+                                            </h6>
+                                            <small class="text-muted d-block mb-3">Bấm vào biến bên dưới để chèn vào nội dung tại vị trí con trỏ.</small>
+
+                                            <div class="d-flex flex-wrap gap-2 mb-2">
+                                                <button type="button" class="btn btn-sm btn-outline-secondary" data-insert-var="{TenHoiVien}">{TenHoiVien}</button>
+                                                <button type="button" class="btn btn-sm btn-outline-secondary" data-insert-var="{TenGoi}">{TenGoi}</button>
+                                                <button type="button" class="btn btn-sm btn-outline-secondary" data-insert-var="{NgayHetHan}">{NgayHetHan}</button>
+                                                <button type="button" class="btn btn-sm btn-outline-secondary" data-insert-var="{TenGym}">{TenGym}</button>
+                                                <button type="button" class="btn btn-sm btn-outline-secondary" data-insert-var="{Hotline}">{Hotline}</button>
+                                            </div>
+                                            <textarea id="txtMauTin" class="form-control mb-3" rows="3" maxlength="500"></textarea>
+
+                                            <div class="small fw-semibold text-muted mb-1">Xem trước tin nhắn</div>
+                                            <div id="divMauTinPreview" class="p-3 border rounded bg-light small"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Nút Lưu Cài Đặt (ẩn ở tab Ngày nghỉ vì tab đó tự lưu) -->
@@ -411,7 +581,28 @@
                 accountName: 'CTY TNHH PHONG GYM N7',
                 holidays: [
                     { date: '2026-09-02', reason: 'Nghỉ lễ Quốc Khánh 2/9' }
-                ]
+                ],
+                notify: {
+                    kenhApp: true,
+                    kenhEmail: true,
+                    kenhSms: false,
+                    kenhZalo: false,
+                    hetHanSapToi: true,
+                    ngayTruoc: 7,
+                    daHetHan: true,
+                    nhacLichPT: true,
+                    gioTruocPT: 2,
+                    sinhNhat: false,
+                    baoCaoNgay: true,
+                    emailBaoCao: 'contact@n7fitness.com',
+                    gioBaoCao: '21:30',
+                    hoiVienMoi: true,
+                    thanhToan: true,
+                    gioGuiNhac: '08:00',
+                    kpTu: '22:00',
+                    kpDen: '06:00',
+                    mauTin: 'Chào {TenHoiVien}, gói {TenGoi} của bạn sẽ hết hạn vào {NgayHetHan}. Vui lòng gia hạn để tiếp tục tập luyện tại {TenGym}. Hotline: {Hotline}'
+                }
             };
 
             function $(id) { return document.getElementById(id); }
@@ -470,6 +661,7 @@
 
                 updateVietQR();
                 renderHolidays();
+                renderNotify();
             }
 
             function updateVietQR() {
@@ -627,6 +819,138 @@
             });
             $('modalSuaNgayNghi').addEventListener('shown.bs.modal', function () { $('editReason').focus(); });
 
+            /* ===================== CẤU HÌNH THÔNG BÁO ===================== */
+            var NOTIFY_CHECKS = {
+                chkKenhApp: 'kenhApp',
+                chkKenhEmail: 'kenhEmail',
+                chkKenhSms: 'kenhSms',
+                chkKenhZalo: 'kenhZalo',
+                chkHetHanSapToi: 'hetHanSapToi',
+                chkDaHetHan: 'daHetHan',
+                chkNhacLichPT: 'nhacLichPT',
+                chkSinhNhat: 'sinhNhat',
+                chkBaoCaoNgay: 'baoCaoNgay',
+                chkHoiVienMoi: 'hoiVienMoi',
+                chkThanhToan: 'thanhToan'
+            };
+            var NOTIFY_VALUES = {
+                numNgayTruoc: 'ngayTruoc',
+                numGioTruocPT: 'gioTruocPT',
+                txtEmailBaoCao: 'emailBaoCao',
+                timeBaoCao: 'gioBaoCao',
+                timeGuiNhac: 'gioGuiNhac',
+                timeKhongPhienTu: 'kpTu',
+                timeKhongPhienDen: 'kpDen',
+                txtMauTin: 'mauTin'
+            };
+
+            function ensureNotify() {
+                settings.notify = Object.assign({}, DEFAULT_SETTINGS.notify, settings.notify || {});
+            }
+            ensureNotify();
+
+            function renderNotify() {
+                ensureNotify();
+                var n = settings.notify;
+                Object.keys(NOTIFY_CHECKS).forEach(function (id) { $(id).checked = !!n[NOTIFY_CHECKS[id]]; });
+                Object.keys(NOTIFY_VALUES).forEach(function (id) { $(id).value = n[NOTIFY_VALUES[id]]; });
+                refreshNotifyUI();
+            }
+
+            function refreshNotifyUI() {
+                $('numNgayTruoc').disabled = !$('chkHetHanSapToi').checked;
+                $('numGioTruocPT').disabled = !$('chkNhacLichPT').checked;
+                var bc = $('chkBaoCaoNgay').checked;
+                $('txtEmailBaoCao').disabled = !bc;
+                $('timeBaoCao').disabled = !bc;
+                updateNotifyPreview();
+            }
+
+            function updateNotifyPreview() {
+                var d = new Date();
+                d.setDate(d.getDate() + (parseInt($('numNgayTruoc').value, 10) || 7));
+                var sample = {
+                    TenHoiVien: 'Nguyễn Văn A',
+                    TenGoi: 'Gói Gym VIP 6 Tháng',
+                    NgayHetHan: pad(d.getDate()) + '/' + pad(d.getMonth() + 1) + '/' + d.getFullYear(),
+                    TenGym: $('txtTenGym').value || '',
+                    Hotline: $('txtHotline').value || ''
+                };
+                var text = ($('txtMauTin').value || '').replace(/\{(\w+)\}/g, function (m, k) {
+                    return Object.prototype.hasOwnProperty.call(sample, k) ? sample[k] : m;
+                });
+                $('divMauTinPreview').textContent = text || '(Chưa có nội dung)';
+            }
+
+            function openNotifyTab() {
+                bootstrap.Tab.getOrCreateInstance($('notify-tab')).show();
+            }
+
+            function readNotify() {
+                var ngay = parseInt($('numNgayTruoc').value, 10);
+                var gio = parseInt($('numGioTruocPT').value, 10);
+                var email = $('txtEmailBaoCao').value.trim();
+                var mau = $('txtMauTin').value.trim();
+
+                if ($('chkHetHanSapToi').checked && (isNaN(ngay) || ngay < 1 || ngay > 60)) {
+                    openNotifyTab();
+                    toast('Số ngày nhắc trước khi hết hạn phải từ 1 đến 60!', 'warning');
+                    $('numNgayTruoc').focus();
+                    return null;
+                }
+                if ($('chkNhacLichPT').checked && (isNaN(gio) || gio < 1 || gio > 48)) {
+                    openNotifyTab();
+                    toast('Số giờ nhắc lịch PT phải từ 1 đến 48!', 'warning');
+                    $('numGioTruocPT').focus();
+                    return null;
+                }
+                if ($('chkBaoCaoNgay').checked && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                    openNotifyTab();
+                    toast('Email nhận báo cáo không hợp lệ!', 'warning');
+                    $('txtEmailBaoCao').focus();
+                    return null;
+                }
+                if (!mau) {
+                    openNotifyTab();
+                    toast('Nội dung mẫu tin nhắn không được để trống!', 'warning');
+                    $('txtMauTin').focus();
+                    return null;
+                }
+
+                var n = Object.assign({}, DEFAULT_SETTINGS.notify, settings.notify || {});
+                Object.keys(NOTIFY_CHECKS).forEach(function (id) { n[NOTIFY_CHECKS[id]] = $(id).checked; });
+                n.ngayTruoc = isNaN(ngay) ? DEFAULT_SETTINGS.notify.ngayTruoc : ngay;
+                n.gioTruocPT = isNaN(gio) ? DEFAULT_SETTINGS.notify.gioTruocPT : gio;
+                n.emailBaoCao = email;
+                n.gioBaoCao = $('timeBaoCao').value || DEFAULT_SETTINGS.notify.gioBaoCao;
+                n.gioGuiNhac = $('timeGuiNhac').value || DEFAULT_SETTINGS.notify.gioGuiNhac;
+                n.kpTu = $('timeKhongPhienTu').value || DEFAULT_SETTINGS.notify.kpTu;
+                n.kpDen = $('timeKhongPhienDen').value || DEFAULT_SETTINGS.notify.kpDen;
+                n.mauTin = mau;
+                return n;
+            }
+
+            Object.keys(NOTIFY_CHECKS).forEach(function (id) {
+                $(id).addEventListener('change', refreshNotifyUI);
+            });
+            ['txtMauTin', 'numNgayTruoc', 'txtHotline', 'txtTenGym'].forEach(function (id) {
+                $(id).addEventListener('input', updateNotifyPreview);
+            });
+
+            // Chèn biến vào vị trí con trỏ trong ô mẫu tin nhắn
+            document.querySelectorAll('[data-insert-var]').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var ta = $('txtMauTin');
+                    var v = btn.getAttribute('data-insert-var');
+                    var start = ta.selectionStart || 0;
+                    var end = ta.selectionEnd || 0;
+                    ta.value = ta.value.slice(0, start) + v + ta.value.slice(end);
+                    ta.focus();
+                    ta.selectionStart = ta.selectionEnd = start + v.length;
+                    updateNotifyPreview();
+                });
+            });
+
             /* ===================== ẨN/HIỆN THANH NÚT LƯU THEO TAB ===================== */
             $('settingTabs').addEventListener('shown.bs.tab', function (e) {
                 var isHolidayTab = e.target.id === 'holiday-tab';
@@ -646,6 +970,9 @@
                     return;
                 }
 
+                var notifyData = readNotify();
+                if (!notifyData) return;
+
                 settings.tenGym = tenGym;
                 settings.hotline = $('txtHotline').value.trim();
                 settings.diaChi = $('txtDiaChiGym').value.trim();
@@ -654,6 +981,7 @@
                 settings.bankCode = $('selBankCode').value;
                 settings.accountNumber = $('txtAccountNumber').value.trim();
                 settings.accountName = $('txtAccountName').value.trim().toUpperCase();
+                settings.notify = notifyData;
 
                 if (saveSettingsToStorage(settings)) {
                     toast('Đã lưu cấu hình hệ thống thành công!');
