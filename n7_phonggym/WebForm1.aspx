@@ -1,4 +1,4 @@
-<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="WebForm1.aspx.cs" Inherits="n7_phonggym.WebForm1" ContentType="text/html; charset=utf-8" %>
+<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="WebForm1.aspx.cs" Inherits="n7_phonggym.WebForm1" %>
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="vi">
@@ -385,7 +385,7 @@
                             </div>
                             <div class="col-6">
                                 <label class="form-label fw-semibold" for="inpEnd">Ngày hết hạn (tự tính)</label>
-                                <input type="text" class="form-control" id="inpEnd" readonly />
+                                <input type="text" class="form-control" id="inpEnd" readonly="readonly" />
                             </div>
                         </div>
                         <div class="alert alert-success mt-3 mb-0 d-flex justify-content-between align-items-center">
@@ -418,15 +418,15 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
     <script>
-    (function () {
-        'use strict';
+        (function () {
+            'use strict';
 
-        /* ===================== CẤU HÌNH & DỮ LIỆU ===================== */
-        var KEY_MEMBERS = 'gym_members_v1';
-        var KEY_DAY = 'gym_day_v1';
+            /* ===================== CẤU HÌNH & DỮ LIỆU ===================== */
+            var KEY_MEMBERS = 'gym_members_v1';
+            var KEY_DAY = 'gym_day_v1';
 
-        // Gọi [WebMethod] trong WebForm1.aspx.cs để lấy danh sách đăng ký từ SQL
-        var API_URL = '<%= ResolveUrl("~/WebForm1.aspx") %>/';
+            // Gọi [WebMethod] trong WebForm1.aspx.cs để lấy danh sách đăng ký từ SQL
+            var API_URL = 'WebForm1.aspx/';
             var TABLE_REFRESH_MS = 5000;
 
             // Số liệu nền (hội viên cũ không hiển thị trong bảng gần đây)
@@ -457,11 +457,21 @@
             function fromISO(s) { var p = s.split('-'); return new Date(+p[0], +p[1] - 1, +p[2]); }
             function fmtDate(iso) { var p = iso.split('-'); return p[2] + '/' + p[1] + '/' + p[0]; }
             function fmtMoney(n) { return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+
+            // Chống XSS: dùng mã ký tự để tránh ký tự đặc biệt trong mã nguồn
             function esc(s) {
-                return String(s).replace(/[&<>"']/g, function (c) {
-                    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+                var map = {
+                    38: '&amp;',
+                    60: '&lt;',
+                    62: '&gt;',
+                    34: '&quot;',
+                    39: '&#39;'
+                };
+                return String(s).replace(/[\u0026\u003C\u003E\u0022\u0027]/g, function (c) {
+                    return map[c.charCodeAt(0)];
                 });
             }
+
             function todayMidnight() { var d = new Date(); d.setHours(0, 0, 0, 0); return d; }
             function findPkg(name) { return PACKAGES.filter(function (p) { return p.name === name; })[0]; }
 
