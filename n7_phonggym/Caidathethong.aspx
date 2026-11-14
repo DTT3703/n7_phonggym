@@ -1,4 +1,4 @@
-<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="CaiDatHeThong.aspx.cs" Inherits="n7_phonggym.CaiDatHeThong" %>
+<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="CaiDatHeThong.aspx.cs" Inherits="n7_phonggym.CaiDatHeThong" ContentType="text/html; charset=utf-8" %>
 
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="vi">
@@ -125,12 +125,12 @@
                     </li>
                     <li class="nav-item">
                         <a href="GoiTap.aspx" class="nav-link">
-                            <i class="bi bi-box-seam me-2"></i>Gói tập & Dịch vụ
+                            <i class="bi bi-box-seam me-2"></i>Gói tập &amp; Dịch vụ
                         </a>
                     </li>
                     <li class="nav-item">
                         <a href="LichTap.aspx" class="nav-link">
-                            <i class="bi bi-calendar-week me-2"></i>Lịch tập & PT
+                            <i class="bi bi-calendar-week me-2"></i>Lịch tập &amp; PT
                         </a>
                     </li>
                     <li class="nav-item">
@@ -155,7 +155,7 @@
                         <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser">
                             <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>Hồ sơ</a></li>
                             <li><a class="dropdown-item" href="CaiDatHeThong.aspx"><i class="bi bi-gear me-2"></i>Cài đặt</a></li>
-                            <li><hr class="dropdown-divider"></li>
+                            <li><hr class="dropdown-divider" /></li>
                             <li><a class="dropdown-item" href="#"><i class="bi bi-box-arrow-right me-2"></i>Đăng xuất</a></li>
                         </ul>
                     </div>
@@ -166,7 +166,7 @@
             <div class="w-100 d-flex flex-column min-vh-100">
                 <!-- Top Header -->
                 <header class="top-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0 fw-bold">Cài Đặt & Cấu Hình Hệ Thống</h5>
+                    <h5 class="mb-0 fw-bold">Cài Đặt &amp; Cấu Hình Hệ Thống</h5>
                     <span class="text-muted small"><i class="bi bi-clock me-1"></i><span id="liveClock"><%= DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss") %></span></span>
                 </header>
 
@@ -202,7 +202,7 @@
                                             <img id="imgLogoPreview" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='110' height='110'><rect width='100%' height='100%' fill='%2310854d'/><text x='50%' y='54%' font-size='22' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'>N7 GYM</text></svg>" alt="Logo Phòng Gym" />
                                         </div>
                                         <div>
-                                            <label class="form-label fw-semibold mb-1" for="inpLogo">Logo & Ảnh đại diện cơ sở</label>
+                                            <label class="form-label fw-semibold mb-1" for="inpLogo">Logo &amp; Ảnh đại diện cơ sở</label>
                                             <p class="text-muted small mb-2">Hiển thị trên phiếu thu, hóa đơn in và trang chủ (JPG, PNG, WEBP - Tối đa 2MB).</p>
                                             <div class="d-flex align-items-center gap-2">
                                                 <input type="file" id="inpLogo" class="form-control form-control-sm" accept=".jpg,.jpeg,.png,.webp" />
@@ -242,9 +242,9 @@
                                 <div class="card-body p-4">
                                     <div class="mb-3">
                                         <h6 class="fw-bold mb-1 text-success">
-                                            <i class="bi bi-calendar-x me-1"></i> Cấu hình ngày nghỉ / lễ & Bảo trì
+                                            <i class="bi bi-calendar-x me-1"></i> Cấu hình ngày nghỉ / lễ &amp; Bảo trì
                                         </h6>
-                                        <small class="text-muted">Danh sách ngày phòng gym đóng cửa để khóa đặt lịch tập & PT vào những ngày này.</small>
+                                        <small class="text-muted">Danh sách ngày phòng gym đóng cửa để khóa đặt lịch tập &amp; PT vào những ngày này.</small>
                                     </div>
 
                                     <!-- Form thêm ngày nghỉ -->
@@ -299,7 +299,7 @@
                                                         <option value="VCB">Vietcombank (Ngoại Thương)</option>
                                                         <option value="TCB">Techcombank (Kỹ Thương)</option>
                                                         <option value="ACB">ACB (Á Châu)</option>
-                                                        <option value="BIDV">BIDV (Đầu tư & Phát triển)</option>
+                                                        <option value="BIDV">BIDV (Đầu tư &amp; Phát triển)</option>
                                                         <option value="VPB">VPBank (Việt Nam Thịnh Vượng)</option>
                                                     </select>
                                                 </div>
@@ -325,7 +325,7 @@
                         </div>
                     </div>
 
-                    <!-- Nút Lưu Cài Đặt (Đã đồng bộ tiếng Việt) -->
+                    <!-- Nút Lưu Cài Đặt -->
                     <div class="mt-4 d-flex justify-content-end gap-2">
                         <button type="button" id="btnRestoreDefault" class="btn btn-outline-secondary px-3 py-2">
                             Khôi phục mặc định
@@ -337,7 +337,7 @@
                 </main>
 
                 <footer class="main-footer">
-                    © 2026 - Giao diện quản trị Admin WebForms.
+                    &copy; 2026 - Giao diện quản trị Admin WebForms.
                 </footer>
             </div>
         </div>
@@ -383,9 +383,8 @@
             function fmtDate(iso) { var p = iso.split('-'); return p[2] + '/' + p[1] + '/' + p[0]; }
             function esc(s) {
                 return String(s).replace(/[&<>"']/g, function (c) {
-                    return {
-                        '&': '&', '<': '<', '>': '>', '"': '"', "'": ''' }[c];
-            });
+                    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+                });
             }
 
             var toastObj = new bootstrap.Toast($('appToast'), { delay: 3000 });
