@@ -2,7 +2,6 @@ using System;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-using System.Globalization;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -10,292 +9,374 @@ namespace n7_phonggym
 {
     public partial class LichTap : System.Web.UI.Page
     {
-        private const string ConnName = "DefaultConnection";
-        private const string FallbackConn = @"Data Source=MAY28GD3\SQLEXPRESS;Initial Catalog=n7_phongGym;Integrated Security=True";
-
-        private string ConnStr
+        private string GetConnStr()
         {
-            get
-            {
-                // Ưu tiên chuỗi trong Web.config, nếu không có thì dùng chuỗi dự phòng
-                ConnectionStringSettings cs = ConfigurationManager.ConnectionStrings[ConnName];
-                return cs != null ? cs.ConnectionString : FallbackConn;
-            }
+            var cs = ConfigurationManager.ConnectionStrings["n7_phongGymConn"];
+            if (cs != null && !string.IsNullOrWhiteSpace(cs.ConnectionString))
+                return cs.ConnectionString;
+
+            return @"Data Source=.\SQLEXPRESS;Initial Catalog=n7_phongGym;Integrated Security=True";
         }
 
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
+                LoadDropdowns();
+                LoadThongKe();
                 LoadDataLichTap();
             }
         }
 
-        // ===== Hiển thị danh sách (có tìm kiếm) =====
+        private void HienThongBao(string noiDung, string loaiAlert = "success")
+        {
+            pnlThongBao.Visible = true;
+            pnlThongBao.CssClass = $"alert alert-{loaiAlert} alert-dismissible fade show mb-4";
+            litThongBao.Text = noiDung;
+        }
+
+        private void LoadDropdowns()
+        {
+            using (SqlConnection conn = new SqlConnection(GetConnStr()))
+            {
+                conn.Open();
+
+                string sqlGoi = @"
+                    SELECT c.ID_CTG, 
+                           c.TenChiTietGoi + N' (' + g.TenGoiTap + N' - Tối đa ' + CAST(c.SoLuongHVToiDa AS NVARCHAR(10)) + N' HV)' AS HienThi
+                    FROM CHI_TIET_DANG_KI c
+                    INNER JOIN GOI_TAP g ON c.ID_MGT = g.ID_MGT
+                    ORDER BY c.ID_CTG";
+                using (SqlDataAdapter daGoi = new SqlDataAdapter(sqlGoi, conn))
+                {
+                    DataTable dtGoi = new DataTable();
+                    daGoi.Fill(dtGoi);
+                    ddlChiTietGoi.DataSource = dtGoi;
+                    ddlChiTietGoi.DataTextField = "HienThi";
+                    ddlChiTietGoi.DataValueField = "ID_CTG";
+                    ddlChiTietGoi.DataBind();
+                }
+
+                string sqlPT = @"
+                    SELECT h.ID_MNV,
+                           nv.HoTen + N' - ' + nv.ChuyenMon + 
+                           CASE WHEN cg.ID_MNV IS NOT NULL THEN N' ★ [PT Chuyên Gia]' ELSE N'' END AS TenPT
+                    FROM HUAN_LUYEN_VIEN h
+                    INNER JOIN NHAN_VIEN nv ON h.ID_MNV = nv.ID_MNV
+                    LEFT JOIN PT_CHUYEN_GIA cg ON h.ID_MNV = cg.ID_MNV
+                    ORDER BY nv.HoTen";
+                using (SqlDataAdapter daPT = new SqlDataAdapter(sqlPT, conn))
+                {
+                    DataTable dtPT = new DataTable();
+                    daPT.Fill(dtPT);
+
+                    ddlPT.DataSource = dtPT;
+                    ddlPT.DataTextField = "TenPT";
+                    ddlPT.DataValueField = "ID_MNV";
+                    ddlPT.DataBind();
+
+                    ddlFilterPT.DataSource = dtPT;
+                    ddlFilterPT.DataTextField = "TenPT";
+                    ddlFilterPT.DataValueField = "ID_MNV";
+                    ddlFilterPT.DataBind();
+                    ddlFilterPT.Items.Insert(0, new ListItem("-- Tất cả PT --", "0"));
+                }
+            }
+        }
+
+        private void LoadThongKe()
+        {
+            using (SqlConnection conn = new SqlConnection(GetConnStr()))
+            {
+                string sql = @"
+                    SELECT 
+                        (SELECT COUNT(*) FROM LK_LICH_TAP) AS TongBuoi,
+                        (SELECT COUNT(*) FROM HUAN_LUYEN_VIEN) AS TongPT,
+                        (SELECT ISNULL(SUM(SoLuongHV), 0) FROM LK_LICH_TAP) AS TongHV,
+                        (SELECT COUNT(*) FROM PT_CHUYEN_GIA) AS TongPTVIP";
+                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                {
+                    conn.Open();
+                    using (SqlDataReader rd = cmd.ExecuteReader())
+                    {
+                        if (rd.Read())
+                        {
+                            litTongBuoi.Text = rd["TongBuoi"].ToString();
+                            litTongPT.Text = rd["TongPT"].ToString();
+                            litTongHV.Text = rd["TongHV"].ToString();
+                            litPTChuyenGia.Text = rd["TongPTVIP"].ToString();
+                        }
+                    }
+                }
+            }
+        }
+
         private void LoadDataLichTap()
         {
-            string sql = @"
-                SELECT lt.ID_CTG, ctg.TenChiTietGoi, lt.ID_MNV, nv.HoTen AS TenPT,
-                       lt.NgayTap, lt.KhungGio, lt.SoLuongHV, lt.DanhGiaBuoi
-                FROM LK_LICH_TAP lt
-                LEFT JOIN CHI_TIET_DANG_KI ctg ON lt.ID_CTG = ctg.ID_CTG
-                LEFT JOIN NHAN_VIEN nv ON lt.ID_MNV = nv.ID_MNV
-                WHERE (@kw = '' OR lt.KhungGio LIKE @like OR nv.HoTen LIKE @like OR ctg.TenChiTietGoi LIKE @like)
-                ORDER BY lt.NgayTap DESC, lt.KhungGio";
-
             string kw = txtSearch.Text.Trim();
+            int filterPT = int.Parse(ddlFilterPT.SelectedValue ?? "0");
+            DateTime parsedFilterNgay;
+            bool coLocNgay = DateTime.TryParse(txtFilterNgay.Text.Trim(), out parsedFilterNgay);
 
-            using (SqlConnection conn = new SqlConnection(ConnStr))
-            using (SqlCommand cmd = new SqlCommand(sql, conn))
+            using (SqlConnection conn = new SqlConnection(GetConnStr()))
             {
-                cmd.Parameters.AddWithValue("@kw", kw);
-                cmd.Parameters.AddWithValue("@like", "%" + kw + "%");
-                DataTable dt = new DataTable();
-                new SqlDataAdapter(cmd).Fill(dt);
-                gvLichTap.DataSource = dt;
-                gvLichTap.DataBind();
+                string sql = @"
+                    SELECT lt.ID_CTG, lt.ID_MNV, lt.NgayTap, lt.KhungGio, lt.SoLuongHV, lt.DanhGiaBuoi,
+                           ct.TenChiTietGoi, ct.SoLuongHVToiDa,
+                           gt.TenGoiTap,
+                           nv.HoTen AS TenPT, nv.ChuyenMon,
+                           CASE WHEN cg.ID_MNV IS NOT NULL THEN 1 ELSE 0 END AS LaChuyenGia
+                    FROM LK_LICH_TAP lt
+                    INNER JOIN CHI_TIET_DANG_KI ct ON lt.ID_CTG = ct.ID_CTG
+                    INNER JOIN GOI_TAP gt ON ct.ID_MGT = gt.ID_MGT
+                    INNER JOIN NHAN_VIEN nv ON lt.ID_MNV = nv.ID_MNV
+                    LEFT JOIN PT_CHUYEN_GIA cg ON lt.ID_MNV = cg.ID_MNV
+                    WHERE (@kw = N'' OR ct.TenChiTietGoi LIKE @like OR gt.TenGoiTap LIKE @like 
+                           OR nv.HoTen LIKE @like OR lt.KhungGio LIKE @like OR lt.DanhGiaBuoi LIKE @like)
+                      AND (@idPT = 0 OR lt.ID_MNV = @idPT)
+                      AND (@coNgay = 0 OR lt.NgayTap = @ngay)
+                    ORDER BY lt.NgayTap DESC, lt.KhungGio ASC";
+
+                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                {
+                    cmd.Parameters.AddWithValue("@kw", kw);
+                    cmd.Parameters.AddWithValue("@like", "%" + kw + "%");
+                    cmd.Parameters.AddWithValue("@idPT", filterPT);
+                    cmd.Parameters.AddWithValue("@coNgay", coLocNgay ? 1 : 0);
+                    cmd.Parameters.Add("@ngay", SqlDbType.Date).Value = coLocNgay ? (object)parsedFilterNgay.Date : DBNull.Value;
+
+                    DataTable dt = new DataTable();
+                    new SqlDataAdapter(cmd).Fill(dt);
+                    gvLichTap.DataSource = dt;
+                    gvLichTap.DataBind();
+                }
             }
+        }
+
+        protected string LayClassSiSo(object soHienTaiObj, object soToiDaObj)
+        {
+            int hienTai = Convert.ToInt32(soHienTaiObj);
+            int toiDa = Convert.ToInt32(soToiDaObj);
+            if (hienTai >= toiDa) return "badge bg-danger";
+            if (hienTai >= toiDa * 0.8) return "badge bg-warning text-dark";
+            return "badge bg-success bg-opacity-75";
         }
 
         protected void btnSearch_Click(object sender, EventArgs e)
         {
+            pnlThongBao.Visible = false;
             LoadDataLichTap();
         }
 
-        // ===== Thêm mới =====
+        protected void btnReset_Click(object sender, EventArgs e)
+        {
+            txtSearch.Text = "";
+            ddlFilterPT.SelectedIndex = 0;
+            txtFilterNgay.Text = "";
+            pnlThongBao.Visible = false;
+            LoadDataLichTap();
+        }
+
         protected void btnSaveLichTap_Click(object sender, EventArgs e)
         {
-            int idCTG, idMNV, soLuong;
-            DateTime ngay;
+            int idCTG = int.Parse(ddlChiTietGoi.SelectedValue);
+            int idMNV = int.Parse(ddlPT.SelectedValue);
+            string khungGio = ddlKhungGio.SelectedValue;
+            string danhGia = txtDanhGiaBuoi.Text.Trim();
 
-            if (!int.TryParse(txtID_CTG.Text, out idCTG) || !int.TryParse(txtID_MNV.Text, out idMNV)
-                || !int.TryParse(txtSoLuongHV.Text, out soLuong)
-                || !DateTime.TryParseExact(txtNgayTap.Text, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out ngay))
+            DateTime ngayTap;
+            if (!DateTime.TryParse(txtNgayTap.Text, out ngayTap))
             {
-                Alert("Vui lòng nhập đầy đủ và đúng định dạng các trường.");
-                OpenModal("addLichTapModal");
+                HienThongBao("Vui lòng chọn ngày tập hợp lệ!", "danger");
                 return;
             }
 
-            try
+            int soLuongHV;
+            if (!int.TryParse(txtSoLuongHV.Text, out soLuongHV) || soLuongHV < 0)
             {
-                using (SqlConnection conn = new SqlConnection(ConnStr))
-                using (SqlCommand cmd = new SqlCommand(
-                    @"INSERT INTO LK_LICH_TAP (ID_CTG, ID_MNV, NgayTap, KhungGio, SoLuongHV, DanhGiaBuoi)
-                      VALUES (@ID_CTG, @ID_MNV, @NgayTap, @KhungGio, @SoLuongHV, @DanhGiaBuoi)", conn))
+                HienThongBao("Số lượng hội viên phải lớn hơn hoặc bằng 0!", "danger");
+                return;
+            }
+
+            string mode = hfMode.Value;
+
+            using (SqlConnection conn = new SqlConnection(GetConnStr()))
+            {
+                conn.Open();
+
+                using (SqlCommand cmdMax = new SqlCommand("SELECT SoLuongHVToiDa FROM CHI_TIET_DANG_KI WHERE ID_CTG = @ctg", conn))
                 {
-                    cmd.Parameters.AddWithValue("@ID_CTG", idCTG);
-                    cmd.Parameters.AddWithValue("@ID_MNV", idMNV);
-                    cmd.Parameters.Add("@NgayTap", SqlDbType.Date).Value = ngay;
-                    cmd.Parameters.AddWithValue("@KhungGio", ddlKhungGio.SelectedValue);
-                    cmd.Parameters.AddWithValue("@SoLuongHV", soLuong);
-                    cmd.Parameters.AddWithValue("@DanhGiaBuoi", txtDanhGiaBuoi.Text.Trim());
-                    conn.Open();
-                    cmd.ExecuteNonQuery();
+                    cmdMax.Parameters.AddWithValue("@ctg", idCTG);
+                    int toiDa = Convert.ToInt32(cmdMax.ExecuteScalar());
+                    if (soLuongHV > toiDa)
+                    {
+                        HienThongBao($"Lớp này chỉ cho phép tối đa <b>{toiDa}</b> hội viên (bạn đang nhập {soLuongHV}).", "warning");
+                        return;
+                    }
+                }
+
+                if (mode == "ADD")
+                {
+                    string sqlCheckPT = @"SELECT COUNT(*) FROM LK_LICH_TAP 
+                                          WHERE ID_MNV = @mnv AND NgayTap = @ngay AND KhungGio = @gio";
+                    using (SqlCommand cmdChk = new SqlCommand(sqlCheckPT, conn))
+                    {
+                        cmdChk.Parameters.AddWithValue("@mnv", idMNV);
+                        cmdChk.Parameters.Add("@ngay", SqlDbType.Date).Value = ngayTap.Date;
+                        cmdChk.Parameters.AddWithValue("@gio", khungGio);
+                        if (Convert.ToInt32(cmdChk.ExecuteScalar()) > 0)
+                        {
+                            HienThongBao("Huấn luyện viên này đã có lịch dạy vào khung giờ đó rồi!", "warning");
+                            return;
+                        }
+                    }
+
+                    string sqlInsert = @"INSERT INTO LK_LICH_TAP (ID_CTG, ID_MNV, NgayTap, KhungGio, SoLuongHV, DanhGiaBuoi)
+                                         VALUES (@ctg, @mnv, @ngay, @gio, @sl, @dg)";
+                    using (SqlCommand cmdIns = new SqlCommand(sqlInsert, conn))
+                    {
+                        cmdIns.Parameters.AddWithValue("@ctg", idCTG);
+                        cmdIns.Parameters.AddWithValue("@mnv", idMNV);
+                        cmdIns.Parameters.Add("@ngay", SqlDbType.Date).Value = ngayTap.Date;
+                        cmdIns.Parameters.AddWithValue("@gio", khungGio);
+                        cmdIns.Parameters.AddWithValue("@sl", soLuongHV);
+                        cmdIns.Parameters.AddWithValue("@dg", danhGia);
+                        cmdIns.ExecuteNonQuery();
+                    }
+
+                    HienThongBao("Đặt lịch tập mới thành công!", "success");
+                }
+                else if (mode == "EDIT")
+                {
+                    int oldCTG = int.Parse(hfOldCTG.Value);
+                    int oldMNV = int.Parse(hfOldMNV.Value);
+                    DateTime oldNgay = DateTime.Parse(hfOldNgay.Value);
+                    string oldGio = hfOldGio.Value;
+
+                    string sqlCheckEdit = @"
+                        SELECT COUNT(*) FROM LK_LICH_TAP 
+                        WHERE ID_MNV = @mnv AND NgayTap = @ngay AND KhungGio = @gio
+                          AND NOT (ID_CTG = @oldCtg AND ID_MNV = @oldMnv AND NgayTap = @oldNgay AND KhungGio = @oldGio)";
+                    using (SqlCommand cmdChk = new SqlCommand(sqlCheckEdit, conn))
+                    {
+                        cmdChk.Parameters.AddWithValue("@mnv", idMNV);
+                        cmdChk.Parameters.Add("@ngay", SqlDbType.Date).Value = ngayTap.Date;
+                        cmdChk.Parameters.AddWithValue("@gio", khungGio);
+                        cmdChk.Parameters.AddWithValue("@oldCtg", oldCTG);
+                        cmdChk.Parameters.AddWithValue("@oldMnv", oldMNV);
+                        cmdChk.Parameters.Add("@oldNgay", SqlDbType.Date).Value = oldNgay.Date;
+                        cmdChk.Parameters.AddWithValue("@oldGio", oldGio);
+
+                        if (Convert.ToInt32(cmdChk.ExecuteScalar()) > 0)
+                        {
+                            HienThongBao("Trùng lịch dạy của Huấn luyện viên ở khung giờ mới chọn!", "warning");
+                            return;
+                        }
+                    }
+
+                    string sqlUpdate = @"
+                        UPDATE LK_LICH_TAP
+                        SET ID_CTG = @ctg, ID_MNV = @mnv, NgayTap = @ngay, KhungGio = @gio,
+                            SoLuongHV = @sl, DanhGiaBuoi = @dg
+                        WHERE ID_CTG = @oldCtg AND ID_MNV = @oldMnv AND NgayTap = @oldNgay AND KhungGio = @oldGio";
+                    using (SqlCommand cmdUpd = new SqlCommand(sqlUpdate, conn))
+                    {
+                        cmdUpd.Parameters.AddWithValue("@ctg", idCTG);
+                        cmdUpd.Parameters.AddWithValue("@mnv", idMNV);
+                        cmdUpd.Parameters.Add("@ngay", SqlDbType.Date).Value = ngayTap.Date;
+                        cmdUpd.Parameters.AddWithValue("@gio", khungGio);
+                        cmdUpd.Parameters.AddWithValue("@sl", soLuongHV);
+                        cmdUpd.Parameters.AddWithValue("@dg", danhGia);
+
+                        cmdUpd.Parameters.AddWithValue("@oldCtg", oldCTG);
+                        cmdUpd.Parameters.AddWithValue("@oldMnv", oldMNV);
+                        cmdUpd.Parameters.Add("@oldNgay", SqlDbType.Date).Value = oldNgay.Date;
+                        cmdUpd.Parameters.AddWithValue("@oldGio", oldGio);
+                        cmdUpd.ExecuteNonQuery();
+                    }
+
+                    HienThongBao("Cập nhật lịch tập thành công!", "success");
                 }
             }
-            catch (SqlException ex)
-            {
-                Alert(ThongBaoLoi(ex));
-                OpenModal("addLichTapModal");
-                return;
-            }
 
-            txtID_CTG.Text = txtID_MNV.Text = txtNgayTap.Text = txtDanhGiaBuoi.Text = "";
-            txtSoLuongHV.Text = "1";
+            LoadThongKe();
             LoadDataLichTap();
-            Alert("Đã thêm lịch tập mới!");
         }
 
-        // ===== Bấm nút Sửa / Xóa trên từng dòng =====
         protected void gvLichTap_RowCommand(object sender, GridViewCommandEventArgs e)
         {
-            if (e.CommandName != "SuaLich" && e.CommandName != "XoaLich") return;
-
-            // Lấy khóa kép của dòng được bấm
-            GridViewRow row = (GridViewRow)((Control)e.CommandSource).NamingContainer;
-            DataKey key = gvLichTap.DataKeys[row.RowIndex];
+            int index = Convert.ToInt32(e.CommandArgument);
+            DataKey key = gvLichTap.DataKeys[index];
 
             int idCTG = Convert.ToInt32(key["ID_CTG"]);
             int idMNV = Convert.ToInt32(key["ID_MNV"]);
-            DateTime ngay = Convert.ToDateTime(key["NgayTap"]);
-            string gio = Convert.ToString(key["KhungGio"]);
+            DateTime ngayTap = Convert.ToDateTime(key["NgayTap"]);
+            string khungGio = key["KhungGio"].ToString();
 
             if (e.CommandName == "SuaLich")
-                MoFormSua(idCTG, idMNV, ngay, gio);
-            else
-                XoaLich(idCTG, idMNV, ngay, gio);
-        }
-
-        // ----- Sửa: nạp dữ liệu vào modal -----
-        private void MoFormSua(int idCTG, int idMNV, DateTime ngay, string gio)
-        {
-            using (SqlConnection conn = new SqlConnection(ConnStr))
-            using (SqlCommand cmd = new SqlCommand(
-                @"SELECT ID_CTG, ID_MNV, NgayTap, KhungGio, SoLuongHV, DanhGiaBuoi
-                  FROM LK_LICH_TAP
-                  WHERE ID_CTG = @ID_CTG AND ID_MNV = @ID_MNV AND NgayTap = @NgayTap AND KhungGio = @KhungGio", conn))
             {
-                cmd.Parameters.AddWithValue("@ID_CTG", idCTG);
-                cmd.Parameters.AddWithValue("@ID_MNV", idMNV);
-                cmd.Parameters.Add("@NgayTap", SqlDbType.Date).Value = ngay;
-                cmd.Parameters.AddWithValue("@KhungGio", gio);
-                conn.Open();
-
-                using (SqlDataReader rd = cmd.ExecuteReader())
+                using (SqlConnection conn = new SqlConnection(GetConnStr()))
                 {
-                    if (!rd.Read())
+                    string sql = @"SELECT * FROM LK_LICH_TAP 
+                                   WHERE ID_CTG = @ctg AND ID_MNV = @mnv AND NgayTap = @ngay AND KhungGio = @gio";
+                    using (SqlCommand cmd = new SqlCommand(sql, conn))
                     {
-                        Alert("Không tìm thấy buổi tập này (có thể đã bị xóa).");
-                        return;
-                    }
+                        cmd.Parameters.AddWithValue("@ctg", idCTG);
+                        cmd.Parameters.AddWithValue("@mnv", idMNV);
+                        cmd.Parameters.Add("@ngay", SqlDbType.Date).Value = ngayTap.Date;
+                        cmd.Parameters.AddWithValue("@gio", khungGio);
 
-                    string ngayStr = Convert.ToDateTime(rd["NgayTap"]).ToString("yyyy-MM-dd");
-                    string gioStr = rd["KhungGio"].ToString();
+                        conn.Open();
+                        using (SqlDataReader rd = cmd.ExecuteReader())
+                        {
+                            if (rd.Read())
+                            {
+                                hfMode.Value = "EDIT";
+                                hfOldCTG.Value = idCTG.ToString();
+                                hfOldMNV.Value = idMNV.ToString();
+                                hfOldNgay.Value = ngayTap.ToString("yyyy-MM-dd");
+                                hfOldGio.Value = khungGio;
 
-                    // Lưu khóa gốc để UPDATE đúng dòng
-                    hfOldCTG.Value = rd["ID_CTG"].ToString();
-                    hfOldMNV.Value = rd["ID_MNV"].ToString();
-                    hfOldNgay.Value = ngayStr;
-                    hfOldGio.Value = gioStr;
+                                ddlChiTietGoi.SelectedValue = idCTG.ToString();
+                                ddlPT.SelectedValue = idMNV.ToString();
+                                txtNgayTap.Text = ngayTap.ToString("yyyy-MM-dd");
 
-                    txtEditID_CTG.Text = rd["ID_CTG"].ToString();
-                    txtEditID_MNV.Text = rd["ID_MNV"].ToString();
-                    txtEditNgayTap.Text = ngayStr;
-                    txtEditSoLuongHV.Text = rd["SoLuongHV"].ToString();
-                    txtEditDanhGiaBuoi.Text = rd["DanhGiaBuoi"].ToString();
+                                if (ddlKhungGio.Items.FindByValue(khungGio) == null)
+                                    ddlKhungGio.Items.Add(new ListItem(khungGio, khungGio));
+                                ddlKhungGio.SelectedValue = khungGio;
 
-                    // Chọn khung giờ; nếu chưa có trong danh sách thì thêm vào
-                    ddlEditKhungGio.ClearSelection();
-                    ListItem item = ddlEditKhungGio.Items.FindByValue(gioStr);
-                    if (item == null)
-                    {
-                        item = new ListItem(gioStr, gioStr);
-                        ddlEditKhungGio.Items.Add(item);
-                    }
-                    item.Selected = true;
-                }
-            }
+                                txtSoLuongHV.Text = rd["SoLuongHV"].ToString();
+                                txtDanhGiaBuoi.Text = rd["DanhGiaBuoi"].ToString();
+                                litModalTitle.Text = "Cập Nhật Lịch Tập";
 
-            OpenModal("editLichTapModal");
-        }
-
-        // ----- Sửa: bấm nút Cập Nhật -----
-        protected void btnUpdateLichTap_Click(object sender, EventArgs e)
-        {
-            int oCTG, oMNV, nCTG, nMNV, soLuong;
-            DateTime oNgay, nNgay;
-
-            if (!int.TryParse(hfOldCTG.Value, out oCTG) || !int.TryParse(hfOldMNV.Value, out oMNV)
-                || !DateTime.TryParseExact(hfOldNgay.Value, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out oNgay))
-            {
-                Alert("Không xác định được buổi tập cần sửa. Vui lòng bấm Sửa lại.");
-                return;
-            }
-
-            if (!int.TryParse(txtEditID_CTG.Text, out nCTG) || !int.TryParse(txtEditID_MNV.Text, out nMNV)
-                || !int.TryParse(txtEditSoLuongHV.Text, out soLuong)
-                || !DateTime.TryParseExact(txtEditNgayTap.Text, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out nNgay))
-            {
-                Alert("Vui lòng nhập đầy đủ và đúng định dạng các trường.");
-                OpenModal("editLichTapModal");
-                return;
-            }
-
-            try
-            {
-                using (SqlConnection conn = new SqlConnection(ConnStr))
-                using (SqlCommand cmd = new SqlCommand(
-                    @"UPDATE LK_LICH_TAP
-                      SET ID_CTG = @nCTG, ID_MNV = @nMNV, NgayTap = @nNgay, KhungGio = @nGio,
-                          SoLuongHV = @SoLuongHV, DanhGiaBuoi = @DanhGiaBuoi
-                      WHERE ID_CTG = @oCTG AND ID_MNV = @oMNV AND NgayTap = @oNgay AND KhungGio = @oGio", conn))
-                {
-                    cmd.Parameters.AddWithValue("@nCTG", nCTG);
-                    cmd.Parameters.AddWithValue("@nMNV", nMNV);
-                    cmd.Parameters.Add("@nNgay", SqlDbType.Date).Value = nNgay;
-                    cmd.Parameters.AddWithValue("@nGio", ddlEditKhungGio.SelectedValue);
-                    cmd.Parameters.AddWithValue("@SoLuongHV", soLuong);
-                    cmd.Parameters.AddWithValue("@DanhGiaBuoi", txtEditDanhGiaBuoi.Text.Trim());
-
-                    cmd.Parameters.AddWithValue("@oCTG", oCTG);
-                    cmd.Parameters.AddWithValue("@oMNV", oMNV);
-                    cmd.Parameters.Add("@oNgay", SqlDbType.Date).Value = oNgay;
-                    cmd.Parameters.AddWithValue("@oGio", hfOldGio.Value);
-
-                    conn.Open();
-                    int n = cmd.ExecuteNonQuery();
-                    if (n == 0)
-                    {
-                        Alert("Không tìm thấy buổi tập để cập nhật (có thể đã bị xóa).");
-                        LoadDataLichTap();
-                        return;
+                                ClientScript.RegisterStartupScript(this.GetType(), "OpenEditModal", "showModal();", true);
+                            }
+                        }
                     }
                 }
             }
-            catch (SqlException ex)
+            else if (e.CommandName == "XoaLich")
             {
-                Alert(ThongBaoLoi(ex));
-                OpenModal("editLichTapModal");
-                return;
-            }
-
-            LoadDataLichTap();
-            Alert("Cập nhật lịch tập thành công!");
-        }
-
-        // ----- Xóa -----
-        private void XoaLich(int idCTG, int idMNV, DateTime ngay, string gio)
-        {
-            try
-            {
-                using (SqlConnection conn = new SqlConnection(ConnStr))
-                using (SqlCommand cmd = new SqlCommand(
-                    @"DELETE FROM LK_LICH_TAP
-                      WHERE ID_CTG = @ID_CTG AND ID_MNV = @ID_MNV AND NgayTap = @NgayTap AND KhungGio = @KhungGio", conn))
+                using (SqlConnection conn = new SqlConnection(GetConnStr()))
                 {
-                    cmd.Parameters.AddWithValue("@ID_CTG", idCTG);
-                    cmd.Parameters.AddWithValue("@ID_MNV", idMNV);
-                    cmd.Parameters.Add("@NgayTap", SqlDbType.Date).Value = ngay;
-                    cmd.Parameters.AddWithValue("@KhungGio", gio);
-                    conn.Open();
-                    cmd.ExecuteNonQuery();
+                    string sqlDel = @"DELETE FROM LK_LICH_TAP 
+                                      WHERE ID_CTG = @ctg AND ID_MNV = @mnv AND NgayTap = @ngay AND KhungGio = @gio";
+                    using (SqlCommand cmd = new SqlCommand(sqlDel, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@ctg", idCTG);
+                        cmd.Parameters.AddWithValue("@mnv", idMNV);
+                        cmd.Parameters.Add("@ngay", SqlDbType.Date).Value = ngayTap.Date;
+                        cmd.Parameters.AddWithValue("@gio", khungGio);
+
+                        conn.Open();
+                        cmd.ExecuteNonQuery();
+                    }
                 }
+
+                HienThongBao("Đã xóa buổi tập khỏi lịch!", "info");
+                LoadThongKe();
+                LoadDataLichTap();
             }
-            catch (SqlException ex)
-            {
-                Alert(ThongBaoLoi(ex));
-                return;
-            }
-
-            LoadDataLichTap();
-            Alert("Đã xóa buổi tập!");
-        }
-
-        // ===== Tiện ích =====
-        private string ThongBaoLoi(SqlException ex)
-        {
-            if (ex.Number == 2627 || ex.Number == 2601)
-                return "Buổi tập này đã tồn tại (trùng Mã gói, PT, Ngày tập và Khung giờ).";
-            if (ex.Number == 547)
-                return "Mã chi tiết gói hoặc mã PT không tồn tại, hoặc dữ liệu đang được liên kết.";
-            return "Lỗi cơ sở dữ liệu: " + ex.Message;
-        }
-
-        private void Alert(string msg)
-        {
-            string safe = msg.Replace("\\", "\\\\").Replace("'", "\\'").Replace("\r", " ").Replace("\n", " ");
-            ScriptManager.RegisterStartupScript(this, GetType(), "alert" + Guid.NewGuid().ToString("N"),
-                "window.addEventListener('load', function () { alert('" + safe + "'); });", true);
-        }
-
-        // Bootstrap được nạp sau </form> nên phải đợi sự kiện load
-        private void OpenModal(string modalId)
-        {
-            ScriptManager.RegisterStartupScript(this, GetType(), "open_" + modalId,
-                "window.addEventListener('load', function () {" +
-                "  new bootstrap.Modal(document.getElementById('" + modalId + "')).show();" +
-                "});", true);
         }
     }
 }
